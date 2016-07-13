@@ -2,7 +2,7 @@
 # SEO settings
 title: "ManHyuks's Blog"
 title2: "" # default: ""
-description: "Just Blog."
+description: ""
 keywords: ""
 url: http://ManHyuk.github.io # site url
 baseurl: null # apply repo name if use it under gh-pages branch
