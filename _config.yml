@@ -1,0 +1,59 @@
+
+# SEO settings
+title: "ManHyuks's Blog"
+title2: "" # default: ""
+description: "Just Blog."
+keywords: ""
+url: http://ManHyuk.github.io # site url
+baseurl: null # apply repo name if use it under gh-pages branch
+# baseurl: null # apply null if repo name is something like username.github.io
+
+google_analytics: UA-XXXXX-XX
+repo: http://github.com/ManHyuk/ManHyuk.github.io
+disqus_shortname: "ManHyuk"
+twitter_username: ""
+comments: true
+
+# Build settings
+permalink   : /:year/:title/
+markdown    : kramdown
+highlighter : rouge
+
+source: ./
+destination: ./_site
+
+# Sass configuration
+sass:
+  sass_dir: assets/scss
+  style: compressed # expanded
+
+# Author settings
+author:
+  name     : "ManHyuk"
+  job      : "Majoring in Computer Software"
+  bio      : "If you want more infomation, Please"
+  thumb    : /images/author.jpg
+  email    : 10000hyuk@gmail.com
+  url      : http://manhyuk.xyz
+  github   : http://github.com/ManHyuk
+  twitter  :
+  facebook :
+  linkedin :
+
+# social settings
+og_locale: "KR"
+twitter_card: "summary_large_image"
+twitter_site: ""
+
+gems:
+  - bourbon
+  - jekyll-paginate
+
+# navbar pages
+navbar:
+  - slug : about
+    title: About
+  - slug : blog
+    title: Blog
+
+exclude: ["gulp", "node_modules", "bower", "bower_components", "config.rb", "src", "Gemfile", "Gemfile.lock", ".rvmrc", ".rbenv-version", "package.json", "gulpfile.js", "README.md", "Rakefile", "changelog.md"]
