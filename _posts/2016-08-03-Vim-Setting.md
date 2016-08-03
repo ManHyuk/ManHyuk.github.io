@@ -1,19 +1,28 @@
 ---
 layout: post
-title: "VIM 설정"
+title: "VIM 플러그인 설정"
 comments: true
 description: ""
 keywords: ""
 ---
 
-## VIM 설정
+
+## 순서
+
 1. 터미널 실행
 2. vi ~/.vimrc 입력
 3. 수정
 
 <div class='divider'></div>
 
-## 설정 내용
+## 플러그인 목록
+
+1. vundle
+2. NERDTree
+3. vim-indent-guides
+
+
+## ~/.vimrc 내용 
 
 ```
 set nocompatible
@@ -53,5 +62,3 @@ hi IndentGuidesOdd guibg=darkgrey ctermbg=236
 hi IndentGuidesEven guibg=darkgrey ctermbg=239
 
 ```
-
-<div class='divider'></div>
