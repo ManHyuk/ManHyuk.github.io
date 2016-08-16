@@ -4,4 +4,4 @@ title:
 permalink: /work/
 ---
 
-this is work portfolio page
+Work Portfolio Page
