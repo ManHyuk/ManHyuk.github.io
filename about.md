@@ -11,6 +11,8 @@ permalink: /about/
 **광운대학교** (2015.03 ~)
 컴퓨터소프트웨어전공
 
+
+
 #### Club Activites
 
 **S.O.P.T.** (2016.03.01 ~ 2016.07.30)
@@ -28,3 +30,6 @@ permalink: /about/
 
 #### SeoulMarket
 서울시 내 프리마켓 정보 공유 서비스
+
+
+<div class ='divider'></div>
