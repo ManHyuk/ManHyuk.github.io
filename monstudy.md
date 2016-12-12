@@ -7,4 +7,4 @@ permalink: /work/monstudy/
 
 #### MONSTUDY
 
-hihi
+<img src ="/images/mon1.png height=400 ">
