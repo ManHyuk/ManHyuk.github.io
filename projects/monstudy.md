@@ -8,7 +8,7 @@ permalink: /work/monstudy/
 ## MONSTUDY
 
 <img src ="/images/mon.png" height="400">
-
+<img src ="/images/seoul1.png" height="400">
 
 
 <br>
