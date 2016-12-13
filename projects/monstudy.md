@@ -7,8 +7,7 @@ permalink: /work/monstudy/
 
 ## MONSTUDY
 
-<img src ="/images/mon.png" height="400">
-<img src ="/images/seoul1.png" height="400">
+<img src ="/images/mon.png" >
 
 
 <br>
@@ -17,6 +16,8 @@ permalink: /work/monstudy/
 
 1. 스터디룸 검색 및 후기 서비스
 2. 동아리(S.O.P.T.) 해커톤 대상
+3. [플레이스토어](https://play.google.com/store/apps/details?id=steam.appjam.sopt.com.myapplication)
+
 
 <br>
 
