@@ -15,7 +15,7 @@ permalink: /work/
 
 [SeoulMarket](/work/seoulmarket) / 2016.10 ~ 2016.10
 <br>
-서울시 공모전 대상(예정)
+서울시 공모전 으뜸상(대상)
 
 
 [VOCAVOCANI](/work) / 2016.12.01 ~ 개발중
