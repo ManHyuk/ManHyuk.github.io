@@ -7,8 +7,6 @@ keywords: ""
 ---
 
 
-파이썬 코딩의 기술 - 2일차
-===
 
 ## Better Way 7
 #### map과 filter 대신 리스트 컴프리헨션을 사용하자

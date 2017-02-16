@@ -6,8 +6,6 @@ description: ""
 keywords: ""
 ---
 
-파이썬 코딩의 기술 - 1일차
-===
 ## Better Way 1
 #### python 3버전 쓰자
 
