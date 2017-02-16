@@ -1,3 +1,12 @@
+---
+layout: post
+title: "파이썬 코딩의기술 1일차"
+comments: false
+description: ""
+keywords: ""
+---
+
+
 파이썬 코딩의 기술 - 2일차
 ===
 
@@ -40,7 +49,7 @@ matrix = [[1,2,3], [4,5,6], [7,8,9]]
 flat = [x for row in matrix for x in row]
 # [1, 2, 3, 4, 5, 6, 7, 8, 9]
 ```
-코드가 짧지만 읽기 어렵다. 
+코드가 짧지만 읽기 어렵다.
 안어렵다면 다음 코드를 보자
 ```python
 filtered = [[x for x in row if x % 3 ==0]
@@ -52,7 +61,7 @@ filtered = [[x for x in row if x % 3 ==0]
 flat = []
 for sublist1 in my_list:
 	for sublist2 in sublist1:
-    	flat.extend(sublist2) 
+    	flat.extend(sublist2)
 ```
 >표현식이 두개가 넘어가면 사용을 자제하자
 >위처럼 코드를 작성하면 길지만 읽기 쉽다

@@ -1,9 +1,17 @@
+---
+layout: post
+title: "파이썬 코딩의기술 1일차"
+comments: false
+description: ""
+keywords: ""
+---
+
 파이썬 코딩의 기술 - 1일차
 ===
 ## Better Way 1
 #### python 3버전 쓰자
 
-- - - 
+- - -
 
 ## Better Way 2
 
@@ -57,7 +65,7 @@ str은 raw 8bit값을 저장, unicode는 유니코드 문자를 저장
 ```python
 'red=5&blue=0&green='  # 이런 쿼리 스트링이 있다면
 red = my_values.get('red', [''])[0]or0
-green = my_values.get('red', [''])[0]or0 
+green = my_values.get('red', [''])[0]or0
 # 빈 문자열, 빈 리스트, 0 모두 암시적으로 False로 만듬
 ```
 위 표현식은 읽기 어렵고 필요한 작업을 다 수행하지도 않음!
@@ -105,7 +113,7 @@ assert a[5:] == a[5:len(a)]
 인덱스의 끝을 기준으로 계산할 때는 음수를 사용
 ```python
 a[:-1]
-a[-3:-1] 
+a[-3:-1]
 # 참고
 a[:20] != a[-20:]
 ```
@@ -156,5 +164,3 @@ a[2:2:-2] # []
 
 추가 - 슬라이싱부터하고 스트라이딩을 하면 데이터의 얕은 복사본이 추가로 생김
 > itertools의 islice 메서드를 사용하자
-
-
