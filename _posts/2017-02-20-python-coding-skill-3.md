@@ -73,6 +73,7 @@ for name, count in zip(names, letters):
 > - 내장 함수 zip은 이터레이터를 병렬로 순회할 때 사용할 수 있다.
 > - 길이가 다른 이터레이터를 사용하면 zip은 그 결과를 **조용히** 잘라낸다
 > - zip으로 실행할 리스트의 길이가 확신할 수 없다면, 대신 내장 모듈 itertools의 zip_longest를 사용해보자
+
 - - -
 
 ## Better Way 12
