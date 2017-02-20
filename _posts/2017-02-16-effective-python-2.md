@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "파이썬 코딩의기술 2일차"
+title: "Effective Python 2일차"
 comments: false
 description: ""
 keywords: ""
@@ -122,7 +122,7 @@ for i in range(len(flavor_list)):
     print('%d: %s' %(i+1, flavor))
     # 1: syntha-6
     # 2: chocolate ...
-```	
+```
 range를 사용하여 flavor 리스트를 순차적으로 출려하는 코드인데
 이 코드는 리스트의 길이를 알아내야 하고, 배열을 인덱스로 접근해야하며, 읽기 불편하다
 
@@ -133,7 +133,7 @@ enumerate는 lazy generator로 이터레이터를 감싼다.
 # enumerate 사용 예
 for i, flavor in enumerate(flavor_list):
 	print('%d: %s' %(i+1, flavor)) # 출력 값은 위의 코드와 같음
-    
+
 # enumerate로 세기 시작할 숫자를 지정할 수 있다.
 for i, flavor in enumerate(flavor_list, 1):
 	print('%d: %s' %(i, flavor)) # 출력 값은 위의 코드와 같음
@@ -145,4 +145,3 @@ for i, flavor in enumerate(flavor_list, 1):
 > - enumerate에 두 번째 파라미터를 사용하면 세기 시작할 숫자를 지정할 수 있다. (기본값은 0)
 
 ---
-

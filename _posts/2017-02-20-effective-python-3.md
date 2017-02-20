@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "파이썬 코딩의기술 3일차"
+title: "Effective Python 3일차"
 comments: false
 description: ""
 keywords: ""
