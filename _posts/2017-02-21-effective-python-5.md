@@ -1,3 +1,11 @@
+---
+layout: post
+title: "Effective Python 5일차"
+comments: false
+description: ""
+keywords: ""
+---
+
 ## Better Way 14
 #### None을 반환하기 보다는 예외를 일으키자.
 
@@ -10,20 +18,20 @@ def divide(a, b):
         return a / b
     except ZeroDivisionError:
         return None
-        
+
 # 일반적인 경우        
 result = divide(x, y)
 if result is None:
-    print('Invalid inputs') 
-    
+    print('Invalid inputs')
+
 # x = 0, y = 5인 경우
-result = divde(x, y) 
+result = divde(x, y)
 if not result:
     print('Invalid inputs') # 잘못됨
 ```
 분자가 0이되면 반환 값도 0이 되어버림
 
-  
+
 이러한 오류를 줄이는 방법은 두가지다.
 1.  반환 값을 두 개로 나눠서 튜플에 담는것
 ```python
@@ -64,5 +72,3 @@ print('Result is %.1f' % result)
 > - None을 반환하는 함수가 오류를 일으키기 쉬운 이유는 None, 0, 빈 문자열이 조건식에서 False로 평가하기 때문이다.
 > - 특별한 상황을 알릴때 None을 반환하는 대신에 예외를 일으키자
 > - 점점 내용이 줄어든다...
-
-
