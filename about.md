@@ -30,5 +30,8 @@ permalink: /about/
 #### SeoulMarket
 서울시 내 프리마켓 정보 공유 서비스
 
+#### ZZICME
+아마추어 포토그래퍼 중개 서비스
+
 
 <div class ='divider'></div>
