@@ -7,7 +7,7 @@
   {% assign page_title = '' %}
   {% if page.title == "Home" %}
       {% capture page_title %}
-        {{ site.title }}{{ site.title2 }} | {{ site.description }}
+        {{ site.title }}{{ site.title2 }} {{ site.description }}
         {%if paginator and paginator.page != 1 %} - Página {{ paginator.page }}{% endif %}
       {% endcapture %}
   {% else %}
