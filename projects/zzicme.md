@@ -5,7 +5,7 @@ permalink: /work/zzicme/
 ---
 
 
-## MONSTUDY
+## ZZICME
 
 <img src ="/images/zzicme.png" >
 
