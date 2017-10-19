@@ -10,7 +10,7 @@ baseurl: null # apply repo name if use it under gh-pages branch
 
 google_analytics: UA-XXXXX-XX
 repo: http://github.com/ManHyuk/ManHyuk.github.io
-disqus_shortname: "mhmh"
+disqus_shortname: "manhyuk"
 twitter_username: ""
 comments: true
 
