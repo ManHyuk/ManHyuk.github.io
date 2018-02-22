@@ -27,8 +27,7 @@ permalink: /work/seoulmarket/
 **개발 파트**
 
 1. 서버 주요기능 구현
-2. 검색 알고리즘
-3. DB 설계
+2. DB 설계
 
 <br>
 
