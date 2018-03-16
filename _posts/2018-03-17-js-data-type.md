@@ -37,7 +37,7 @@ c = 20; // c에 20 할당 (b와 다른 주소 false를 덮어 씀)
 
 ```
 
-![primitive](/images/js-flow/primitive.png)
+![primitive](/images/js-flow/js-primitive.png)
 
 
 
@@ -57,4 +57,4 @@ console.log(obj.a); // 10
 // obj === obj2
 ```
 
-![reference](/images/js-flow/reference.png)
+![reference](/images/js-flow/js-reference.png)

@@ -62,4 +62,4 @@ c = function(){
 
 > 참고 1) inflearn / jsflow
 >
-> 참고 2) https://github.com/JaeYeopHan/Interview_Question_for_Beginner/tree/master/JavaScript#hoisting
+> 참고 2) 
