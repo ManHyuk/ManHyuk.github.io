@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Vue Instance"
+title: "Vue Instance -2"
 comments: false
 description: ""
 keywords: ""
