@@ -16,7 +16,7 @@ PROTOTYPE!!!
 
 
 
-![detail-triangle](/images/js-flow/js-detail-triangle)
+![detail-triangle](/images/js-flow/js-detail-triangle.png)
 
 
 
