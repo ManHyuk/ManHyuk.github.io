@@ -18,8 +18,8 @@ keywords: ""
 
 ```javascript
 console.log(a()); // a
-console.log(b()); // bb
-console.log(c()); // c
+console.log(b()); // err
+console.log(c()); // err
 
 function a() {
     return 'a';
@@ -62,4 +62,4 @@ c = function(){
 
 > 참고 1) inflearn / jsflow
 >
-> 참고 2) 
+> 참고 2)
