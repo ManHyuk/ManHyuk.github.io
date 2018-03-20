@@ -66,6 +66,7 @@ First-Class-Citizen(Object) 의 조건
 
 
 
+콜백함수!!
 
 Something will **call** this function **back** sometime somehow.
 
