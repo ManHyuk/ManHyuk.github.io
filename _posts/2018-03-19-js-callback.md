@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "자바스크립트 함수와 콜백"
+title: "자바스크립트 함수와 콜백함수"
 comments: false
 description: ""
 keywords: ""
