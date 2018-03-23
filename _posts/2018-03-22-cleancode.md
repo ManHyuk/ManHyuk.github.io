@@ -1,0 +1,169 @@
+---
+layout: post
+title: "CleanCode for JavaScript"
+comments: false
+description: ""
+keywords: ""
+---
+
+
+**이 글은 단순히 스타일 가이드가 아니라 자바스크립트로 코드를 작성할때 읽기 쉽고, 재사용 가능하며 리팩토링 가능하게끔 작성하도록 돕기 위한 글이다.**
+
+
+모든 원칙이 엄격히 지켜져야하는 것은 아니다. 이것들은 **지침** 일뿐이다.
+
+## 변수(Variables)
+
+
+- 의미있고 발음하기 쉬운 변수 이름을 사용하자
+
+```JavaScript
+// BAD
+const yyyymmdstr = moment().format('YYYY/MMDD');
+
+// GOOD
+const currentData = moment().format('YYYY/MMDD');
+```
+
+- 검색가능한 이름을 사용하자
+  - 작성할 코드보다 읽을 코드가 더 많기 때문에 읽기 쉽고 검색가능하게 작성해야한다.
+
+```JavaScript
+// BAD
+setTimeout(blastOff, 86400000); // 86400000의 의미를 알 수 없다.
+
+// GOOD
+const MILLISECONDS_IN_A_DAY = 86400000; // const 변수를를 대문자로 선언
+setTimeout(blastOff, MILLISECONDS_IN_A_DAY);
+// 매직넘버 관리!!!
+```
+
+
+- 의도를 나타내는 변수를 사용하자
+  - 의도는 알겠는데 코드는 모르겠다
+
+```JavaScript
+// BAD
+const address = 'One Infinite Loop, Cupertino 95014';
+const cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
+saveCityZipCode(address.match(cityZipCodeRegex)[1], address.match(cityZipCodeRegex)[2]);
+
+// GOOD
+const address = 'One Infinite Loop, Cupertino 95014';
+const cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
+const [, city, zipCode] = address.match(cityZipCodeRegex) || [];
+saveCityZipCode(city, zipCode);
+```
+
+- 자신만 알아볼 수 있는 작명을 피하자
+  - 명시적인 것이 암시적인 것보다 좋다.
+
+```JavaScript
+// BAD
+const loacations = ['seoul', 'suwon', 'busan'];
+locations.forEach((l) => { // l의 의미를 알지 못한다
+  doStuff();
+  doSomeOtherStuff();
+
+  dispatch(l);
+})
+
+// GOOD
+const locations = ['seoul', 'suwon', 'busan'];
+locations.forEach(location => { // locations을 location으로 변경
+  doStuff();
+  doSomeOtherStuff();
+
+  dispatch(location);
+});
+```
+
+- 문맥상 필요 없는 것들을 쓰지 말자
+
+```JavaScript
+// BAD
+const car = {
+  carColor: 'blue'
+}
+function paintCar(car){
+  car.carColor = 'red';
+}
+
+// GOOD
+const car = {
+  color: 'blue'
+}
+function paintCar(car){
+  car.color = 'red';
+}
+```
+
+
+## 함수 (Functions)
+#### 함수 인자는 2개 이하가 인상적이다.
+매개변수의 개수를 제한하는것은 테스팅을 쉽게 만들어 주기 때문에 중요하다.
+
+**1개나 2개의 인자** 를 가지고 있는 것이 가장 이상적인 케이스이고 3개의 인자는 가능한 피해야한다.
+
+만약 인자가 더 많아진다면 통합되어야 한다.
+
+인자가 많다는 것은 함수가 너무 많은 역할을 하고 있다는 것.
+
+
+- 함수가 기대하는 속성을 좀더 명확히 하기 위해서 es6의 비구조화(destructuring) 구문을 사용할 수 있다.
+
+  1. 어떤 사람이 그 함수의 시그니쳐(인자의 타입, 반환되는 값의 타입 등)를 볼 때 어떤 속성이 사용되는지 즉시 알 수 있다.
+  2. 비구조화는 함수에 전달된 인수 객체의 지정된 기본타입 값을 복제하며 이는 사이드이펙트가 일어나는 것을 방지한다. 참고로 인수 객체로부터 비구조화된 객체와 배열은 복제되지 않는다.
+  3. Linter를 사용하면 사용하지않는 인자에 대해 경고해주거나 비구조화 없이 코드를 짤 수 없게 할 수 있다.
+
+```JavaScript
+// BAD
+function createMenu(title, body, buttonText, cancellable) {
+  // ...
+}
+
+// GOOD
+function createMenu({title, body, buttonText, cancellable}){
+  // ...
+}
+createMenu({
+  title: 'Foo',
+  body: 'Bar',
+  buttonText: 'Baz',
+  cancellable: true
+})
+```
+
+- 함수는 하나의 행동만 해야 한다.
+
+함수가 1개 이상의 행동을 한다면 작성, 테스트, 이해 모두 어려워 진다. 함수에 하나의 행동을 정의하게 된다면 함수는 좀 더 고치기 쉬워지고 읽기 쉬워진다.
+
+```JavaScript
+// BAD
+function emailClients(clients) {
+  clients.forEach(client => {
+    const clientRecord = database.lookup(client);
+    if (clientRecord.isActive()) { // 함수안에 두개의 행동
+      email(client);
+    }
+  });
+}
+
+// GOOD
+// 행동을 분리함
+function emailClients(clients) {
+  clients
+    .filter(isClientActive)
+    .forEach(email);
+}
+
+function isClientActive(client) {
+  const clientRecord = database.lookup(client);
+  return clientRecord.isActive();
+}
+```
+
+- 함수명은 함수가 무엇을 하는지 알 수 있어야 한다,
+
+- 함수는 단일 행동을 추상화 해야한다.
+추상화된 이름이 여러 의미를 내포하고 있다면, 그 함수는 너무 많은 일을 하게 설계된것이다.
