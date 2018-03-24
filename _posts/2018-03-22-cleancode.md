@@ -25,6 +25,10 @@ const yyyymmdstr = moment().format('YYYY/MMDD');
 const currentData = moment().format('YYYY/MMDD');
 ```
 
+
+
+
+
 - 검색가능한 이름을 사용하자
   - 작성할 코드보다 읽을 코드가 더 많기 때문에 읽기 쉽고 검색가능하게 작성해야한다.
 
@@ -37,6 +41,10 @@ const MILLISECONDS_IN_A_DAY = 86400000; // const 변수를를 대문자로 선�
 setTimeout(blastOff, MILLISECONDS_IN_A_DAY);
 // 매직넘버 관리!!!
 ```
+
+
+
+
 
 
 - 의도를 나타내는 변수를 사용하자
@@ -78,6 +86,10 @@ locations.forEach(location => { // locations을 location으로 변경
 });
 ```
 
+
+
+
+
 - 문맥상 필요 없는 것들을 쓰지 말자
 
 ```JavaScript
@@ -99,8 +111,17 @@ function paintCar(car){
 ```
 
 
+
+
+
 ## 함수 (Functions)
+
+
+
 #### 함수 인자는 2개 이하가 인상적이다.
+
+
+
 매개변수의 개수를 제한하는것은 테스팅을 쉽게 만들어 주기 때문에 중요하다.
 
 **1개나 2개의 인자** 를 가지고 있는 것이 가장 이상적인 케이스이고 3개의 인자는 가능한 피해야한다.
@@ -110,8 +131,9 @@ function paintCar(car){
 인자가 많다는 것은 함수가 너무 많은 역할을 하고 있다는 것.
 
 
-- 함수가 기대하는 속성을 좀더 명확히 하기 위해서 es6의 비구조화(destructuring) 구문을 사용할 수 있다.
 
+
+- 함수가 기대하는 속성을 좀더 명확히 하기 위해서 es6의 비구조화(destructuring) 구문을 사용할 수 있다.
   1. 어떤 사람이 그 함수의 시그니쳐(인자의 타입, 반환되는 값의 타입 등)를 볼 때 어떤 속성이 사용되는지 즉시 알 수 있다.
   2. 비구조화는 함수에 전달된 인수 객체의 지정된 기본타입 값을 복제하며 이는 사이드이펙트가 일어나는 것을 방지한다. 참고로 인수 객체로부터 비구조화된 객체와 배열은 복제되지 않는다.
   3. Linter를 사용하면 사용하지않는 인자에 대해 경고해주거나 비구조화 없이 코드를 짤 수 없게 할 수 있다.
@@ -133,6 +155,10 @@ createMenu({
   cancellable: true
 })
 ```
+
+
+
+
 
 - 함수는 하나의 행동만 해야 한다.
 
@@ -163,7 +189,252 @@ function isClientActive(client) {
 }
 ```
 
+
+
+
+
 - 함수명은 함수가 무엇을 하는지 알 수 있어야 한다,
+
+
 
 - 함수는 단일 행동을 추상화 해야한다.
 추상화된 이름이 여러 의미를 내포하고 있다면, 그 함수는 너무 많은 일을 하게 설계된것이다.
+
+```javascript
+// BAD
+function parseBetterJSAlternative(code) { // 함수명이 여러 의미를 내포하고 있다.
+  const REGEXES = [
+    // ...
+  ];
+
+  const statements = code.split(' ');
+  const tokens = [];
+  REGEXES.forEach(REGEX => {
+    statements.forEach(statement => {
+      // ...
+    });
+  });
+
+  const ast = [];
+  tokens.forEach(token => {
+    // lex...
+  });
+
+  ast.forEach(node => {
+    // parse...
+  });
+}
+// GOOD
+function tokenize(code) {
+  const REGEXES = [
+    // ...
+  ];
+
+  const statements = code.split(' ');
+  const tokens = [];
+  REGEXES.forEach(REGEX => {
+    statements.forEach(statement => {
+      tokens.push( /* ... */ );
+    });
+  });
+
+  return tokens;
+}
+
+function lexer(tokens) {
+  const ast = [];
+  tokens.forEach(token => {
+    ast.push( /* ... */ );
+  });
+
+  return ast;
+}
+
+function parseBetterJSAlternative(code) { // 여러 의미를 내포하는 함수내부의 행동들을 나눔
+  const tokens = tokenize(code);
+  const ast = lexer(tokens);
+  ast.forEach(node => {
+    // parse...
+  });
+}
+```
+
+
+
+
+
+- 중복된 코드를 작성하지 마라.
+  - 중복된 코드가 있다는 것은 어떤 로직을 수정해야 할 일이 생겼을 때 수정 해야할 코드가 한 곳 이상이라는 것을 뜻한다.
+
+
+
+```javascript
+// BAD
+function showDeveloperList(developers) {
+  developers.forEach(developers => {
+    const expectedSalary = developer.calculateExpectedSalary();
+    const experience = developer.getExperience();
+    const githubLink = developer.getGithubLink();
+    const data = {
+      expectedSalary,
+      experience,
+      githubLink
+    };
+
+    render(data);
+  });
+}
+
+function showManagerList(managers) {
+  managers.forEach(manager => {
+    const expectedSalary = manager.calculateExpectedSalary();
+    const experience = manager.getExperience();
+    const portfolio = manager.getMBAProjects();
+    const data = {
+      expectedSalary,
+      experience,
+      portfolio
+    };
+
+    render(data);
+  });
+}
+
+// GOOD
+function showEmployeeList(employees) {
+  employees.forEach((employee) => {
+    const expectedSalary = employee.calculateExpectedSalary();
+    const experience = employee.getExperience();
+
+    let portfolio = employee.getGithubLink();
+
+    if (employee.type === 'manager') {
+      portfolio = employee.getMBAProjects();
+    }
+
+    const data = {
+      expectedSalary,
+      experience,
+      portfolio
+    };
+
+    render(data);
+  });
+}
+```
+
+
+
+- 매개변수로 플래그를 사용하지 마라.
+  - 플래그를 사용하는 것 자체가 그 함수가 한가지 이상의 역할을 하고 있다는 것을 뜻한다.
+  - Boolean 기반으로 함수가 실행되는 코드가 나뉜다면 함수를 분리해라.
+
+```javascript
+// BAD
+function createFile(name, temp){
+    if (temp) {
+        fs.create(`./temp/${name}`);
+    } else {
+        fs.create(name);
+    }
+}
+
+// GOOD
+function createFile(name) {
+  fs.create(name);
+}
+
+function createTempFile(name) {
+  createFile(`./temp/${name}`);
+}
+```
+
+
+
+
+
+#### 사이드 이펙트를 피해라 - 1
+
+- 함수는 값을 받아서 어떤 일을 하거나 값을 리턴할때 사이드이펙트를 만들어낸다. 
+- 어떠한 구조체도 없이 객체 사이의 상태를 공유하거나, 같은 사이드이펙트를 만들어 내는 함수를 여러개 만들면 안된다.
+
+
+
+```javascript
+// BAD
+// 아래 함수에 의해 참조되는 전역 변수다.
+// 이 전역 변수를 사용하는 또 하나의 함수가 있다고 생각해자. 이제 이 변수는 배열이 될 것이고, 프로그램을 망가뜨리게 된다.
+let name = 'Ryan McDermott';
+
+function splitIntoFirstAndLastName() {
+  name = name.split(' ');
+}
+
+splitIntoFirstAndLastName();
+
+console.log(name); // ['Ryan', 'McDermott'];
+
+
+// GOOD
+function splitIntoFirstAndLastName(name) {
+  return name.split(' ');
+}
+
+const name = 'Ryan McDermott';
+const newName = splitIntoFirstAndLastName(name);
+
+console.log(name); // 'Ryan McDermott';
+console.log(newName); // ['Ryan', 'McDermott'];
+```
+
+
+
+#### 사이드 이펙트를 피해라 - 2
+
+1. 실제로 입력된 객체를 수정하고 싶은 경우가 있을 수 있지만 예제를 보고 적용해보면 그런 경우는 거의 없다는 것을 알 수 있다.
+2. 큰 객체를 복제하는것은 성능 측면에서 매우 비싼 코스트다. 하지만 큰 문제가 되지는 않는다. 왜냐하면 좋은라이브러리를 사용하면 해결 할 수 있다. 이는 개체와 배열을 수동으로 복제하는 것처럼 메모리 집약적이지 않게 하고, 빠르게 복제해준다.
+
+
+
+```javascript
+// BAD
+const addItemToCart = (cart, item) => {
+    car.push({item, data:Date.now()});
+};
+
+// GOOD
+const addItemToCart = (cart, item) => {
+    return [...cart, {item, date : Date.now()}]
+};
+```
+
+
+
+- 전역 함수를 사용하지 마라.
+  - 전역 환경을 사용하는 것은 JavaScript에서 나쁜 관행이다. 왜냐하면 다른 라이브러리들과 충돌이 날 수 있고, 당신의 API를 쓰는 유저들은 운영환경에서 예외가 발생하기 전까지 문제를 인지 못하기 때문이다.
+
+
+
+Array메소드를 확장하여 두 배열간의 차이를 보여주는 diff 메소드를 사용하려면 새로운 함수를 Array.prototype에 쓸 수도 있지만, 똑같은 일을 시도한 다른 라이브러이와 충돌 할 수 있다.
+
+ES6을 사용하여 전역 Array를 상속 받는게 더 나은 방법이다.
+
+
+
+```javascript
+// BAD
+Array.prototype.diff = function diff(comparisonArray) {
+  const hash = new Set(comparisonArray);
+  return this.filter(elem => !hash.has(elem));
+};
+
+// GOOD
+class SuperArray extends Array {
+  diff(comparisonArray) {
+    const hash = new Set(comparisonArray);
+    return this.filter(elem => !hash.has(elem));
+  }
+}
+```
+
+ㅎ
