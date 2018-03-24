@@ -17,7 +17,7 @@ keywords: ""
 
 - 의미있고 발음하기 쉬운 변수 이름을 사용하자
 
-```JavaScript
+```javascript
 // BAD
 const yyyymmdstr = moment().format('YYYY/MMDD');
 
@@ -29,10 +29,12 @@ const currentData = moment().format('YYYY/MMDD');
 
 
 
+
+
 - 검색가능한 이름을 사용하자
   - 작성할 코드보다 읽을 코드가 더 많기 때문에 읽기 쉽고 검색가능하게 작성해야한다.
 
-```JavaScript
+```javascript
 // BAD
 setTimeout(blastOff, 86400000); // 86400000의 의미를 알 수 없다.
 
@@ -47,10 +49,12 @@ setTimeout(blastOff, MILLISECONDS_IN_A_DAY);
 
 
 
+
+
 - 의도를 나타내는 변수를 사용하자
   - 의도는 알겠는데 코드는 모르겠다
 
-```JavaScript
+```javascript
 // BAD
 const address = 'One Infinite Loop, Cupertino 95014';
 const cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
@@ -63,10 +67,12 @@ const [, city, zipCode] = address.match(cityZipCodeRegex) || [];
 saveCityZipCode(city, zipCode);
 ```
 
+
+
 - 자신만 알아볼 수 있는 작명을 피하자
   - 명시적인 것이 암시적인 것보다 좋다.
 
-```JavaScript
+```javascript
 // BAD
 const loacations = ['seoul', 'suwon', 'busan'];
 locations.forEach((l) => { // l의 의미를 알지 못한다
@@ -90,9 +96,11 @@ locations.forEach(location => { // locations을 location으로 변경
 
 
 
+
+
 - 문맥상 필요 없는 것들을 쓰지 말자
 
-```JavaScript
+```javascript
 // BAD
 const car = {
   carColor: 'blue'
@@ -138,7 +146,7 @@ function paintCar(car){
   2. 비구조화는 함수에 전달된 인수 객체의 지정된 기본타입 값을 복제하며 이는 사이드이펙트가 일어나는 것을 방지한다. 참고로 인수 객체로부터 비구조화된 객체와 배열은 복제되지 않는다.
   3. Linter를 사용하면 사용하지않는 인자에 대해 경고해주거나 비구조화 없이 코드를 짤 수 없게 할 수 있다.
 
-```JavaScript
+```javascript
 // BAD
 function createMenu(title, body, buttonText, cancellable) {
   // ...
@@ -153,8 +161,10 @@ createMenu({
   body: 'Bar',
   buttonText: 'Baz',
   cancellable: true
-})
+});
 ```
+
+
 
 
 
@@ -164,7 +174,7 @@ createMenu({
 
 함수가 1개 이상의 행동을 한다면 작성, 테스트, 이해 모두 어려워 진다. 함수에 하나의 행동을 정의하게 된다면 함수는 좀 더 고치기 쉬워지고 읽기 쉬워진다.
 
-```JavaScript
+```javascript
 // BAD
 function emailClients(clients) {
   clients.forEach(client => {
@@ -263,6 +273,8 @@ function parseBetterJSAlternative(code) { // 여러 의미를 내포하는 함�
 
 
 
+
+
 - 중복된 코드를 작성하지 마라.
   - 중복된 코드가 있다는 것은 어떤 로직을 수정해야 할 일이 생겼을 때 수정 해야할 코드가 한 곳 이상이라는 것을 뜻한다.
 
@@ -325,6 +337,8 @@ function showEmployeeList(employees) {
 
 
 
+
+
 - 매개변수로 플래그를 사용하지 마라.
   - 플래그를 사용하는 것 자체가 그 함수가 한가지 이상의 역할을 하고 있다는 것을 뜻한다.
   - Boolean 기반으로 함수가 실행되는 코드가 나뉜다면 함수를 분리해라.
@@ -348,6 +362,8 @@ function createTempFile(name) {
   createFile(`./temp/${name}`);
 }
 ```
+
+
 
 
 
@@ -389,6 +405,8 @@ console.log(newName); // ['Ryan', 'McDermott'];
 
 
 
+
+
 #### 사이드 이펙트를 피해라 - 2
 
 1. 실제로 입력된 객체를 수정하고 싶은 경우가 있을 수 있지만 예제를 보고 적용해보면 그런 경우는 거의 없다는 것을 알 수 있다.
@@ -407,6 +425,8 @@ const addItemToCart = (cart, item) => {
     return [...cart, {item, date : Date.now()}]
 };
 ```
+
+
 
 
 
@@ -437,4 +457,3 @@ class SuperArray extends Array {
 }
 ```
 
-ㅎ
