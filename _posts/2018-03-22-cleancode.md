@@ -7,6 +7,11 @@ keywords: ""
 ---
 
 
+
+클린코드 for 자바스크립트 ( 변수, 함수 )
+
+
+
 **이 글은 단순히 스타일 가이드가 아니라 자바스크립트로 코드를 작성할때 읽기 쉽고, 재사용 가능하며 리팩토링 가능하게끔 작성하도록 돕기 위한 글이다.**
 
 
@@ -456,4 +461,238 @@ class SuperArray extends Array {
   }
 }
 ```
+
+
+
+
+
+- 명령형 프로그래밍보다 함수형 프로그래밍을 지향해라.
+
+  - 함수형 언어는 더 깔끔하고 테스트하기 쉽다.
+
+  ​
+
+```javascript
+const programmerOutput = [
+  {
+    name: 'Uncle Bobby',
+    linesOfCode: 500
+  }, {
+    name: 'Suzie Q',
+    linesOfCode: 1500
+  }, {
+    name: 'Jimmy Gosling',
+    linesOfCode: 150
+  }, {
+    name: 'Gracie Hopper',
+    linesOfCode: 1000
+  }
+];
+
+// BAD
+let totalOutput = 0;
+
+for (let i = 0; i < programmerOutput.length; i++) {
+  totalOutput += programmerOutput[i].linesOfCode;
+}
+
+// GOOD
+const totalOutput = programmerOutput
+  .map(programmer => programmer.linesOfCode)
+  .reduce((acc, linesOfCode) => acc + linesOfCode, INITIAL_VALUE);
+```
+
+
+
+- 조건문을 캡슐화 하자.
+
+```javascript
+// BAD
+if (fsm.state === 'fetching' && isEmpty(listNode)) {
+  // ...
+}
+
+// GOOD
+function shouldShowSpinner(fsm, listNode) {
+  return fsm.state === 'fetching' && isEmpty(listNode);
+}
+
+if (shouldShowSpinner(fsmInstance, listNodeInstance)) {
+  // ...
+}
+```
+
+
+
+- 부정조건문을 사용하지 마라.
+
+
+
+```javascript
+function isDOMNodeNotPresent(node) {
+  // ...
+}
+
+// BAD
+if (!isDOMNodeNotPresent(node)) {
+  // ...
+}
+
+// GOOD
+if (isDOMNodePresent(node)) {
+  // ...
+}
+```
+
+
+
+
+
+- 조건문 작성을 피해라.
+  - 함수나 클래스에 if문을 쓴다면 그것은 그 함수나 클래스가 한가지 이상의 일을 수행하고 있다는것과 같다.
+
+
+
+```javascript
+// BAD
+class Airplane {
+  // ...
+  getCruisingAltitude() {
+    switch (this.type) {
+      case '777':
+        return this.getMaxAltitude() - this.getPassengerCount();
+      case 'Air Force One':
+        return this.getMaxAltitude();
+      case 'Cessna':
+        return this.getMaxAltitude() - this.getFuelExpenditure();
+    }
+  }
+}
+
+// GOOD
+class Airplane {
+  // ...
+}
+
+class Boeing777 extends Airplane {
+  // ...
+  getCruisingAltitude() {
+    return this.getMaxAltitude() - this.getPassengerCount();
+  }
+}
+
+class AirForceOne extends Airplane {
+  // ...
+  getCruisingAltitude() {
+    return this.getMaxAltitude();
+  }
+}
+
+class Cessna extends Airplane {
+  // ...
+  getCruisingAltitude() {
+    return this.getMaxAltitude() - this.getFuelExpenditure();
+  }
+}
+```
+
+
+
+
+
+- 타입-체킹을 피해라 - 1
+  - 자바스크립트는 타입이 정해져있지 않다. 함수가 어떤 타입의 인자든 받을 수 있다는 것을 의미한다.
+  - 때문에 함수에 타입-체킹을 시도 할 수 있다. 타입 체킹에는 많은 방법들이 존재한다.
+  - 첫번째 방법은 일관성 있는 API를 사용하는 것 입니다.
+
+```javascript
+// BAD
+function travelToTexas(vehicle) {
+  if (vehicle instanceof Bicycle) {
+    vehicle.pedal(this.currentLocation, new Location('texas'));
+  } else if (vehicle instanceof Car) {
+    vehicle.drive(this.currentLocation, new Location('texas'));
+  }
+}
+
+// GOOD
+function travelToTexas(vehicle) {
+  vehicle.move(this.currentLocation, new Location('texas'));
+}
+```
+
+
+
+- 타입-체킹을 피해라 - 2
+  - 기본 자료형을 사용하고 다형성을 사용할 수 없을때에도 여전히 타입-체킹이 필요하다고 느껴지면 타입스크립트를 사용해라
+
+
+
+```javascript
+// BAD
+function combine(val1, val2) {
+  if (typeof val1 === 'number' && typeof val2 === 'number' ||
+      typeof val1 === 'string' && typeof val2 === 'string') {
+    return val1 + val2;
+  }
+  
+  throw new Error('Must be of type String or Number');
+}
+
+// GOOD
+function combine(val1, val2) {
+  return val1 + val2;
+}
+```
+
+
+
+- 과도한 최적화를 지양해라.
+  - 최신 브라우저들은 런타임시에 많은 최적화 작업을 수행한다. 때문에 대부분 코드 최적화에 들이는 시간들이 낭비가 될 수 있다.
+  - 최적화가 부족한 곳을 알려주는 레퍼런스를 찾아 부족한 부분만 최적화 하자
+
+```javascript
+// 오래된 브라우저의 경우 캐시되지 않은 `list.length`를 통한 반복문은 높은 코스트를 가졌습니다.
+// 그 이유는 `list.length`를 매번 계산해야만 했기 때문인데, 최신 브라우저에서는 이것이 최적화 되었습니다.
+for (let i = 0, len = list.length; i < len; i++) {
+  // ...
+}
+```
+
+
+
+
+
+- 죽은 코드를 지워라
+  - 죽은 코드는 중복된 코드 만큼이나 좋지 않다.
+  - 호출되지 않는 코드가 있다면 지워라.
+  - 코드가 필요하면 버전 히스토리에서 찾아라
+
+
+
+```javascript
+// BAD
+function oldRequestModule(url) {
+  // ...
+}
+
+function newRequestModule(url) {
+  // ...
+}
+
+// GOOD
+function newRequestModule(url) {
+  // ...
+}
+
+
+const req = newRequestModule;
+inventoryTracker('apples', req, 'www.inventory-awesome.io');
+```
+
+
+
+
+
+
 
