@@ -24,7 +24,7 @@ example.com/#/user
 
 - 여기서 # 태그 값을 제외하고 기본 URL 방식으로 요청 때마다 index.html을 받아 라우팅 하려면
 
-```JavaScript
+```javascript
 const router = new VueRouter({
   routes,
   // 아래와 같이 history 모드를 추가해주면 된다.
@@ -60,7 +60,7 @@ const router = new VueRouter({
 - Vue의 Template에는 최상위 태그 1개만 있어야 렌더가 가능하다.
 - 아래는 Template의 HTML 태그를 정의할 때 주의해야 하는 Vue의 성질이다.
 
-```JavaScript
+```javascript
 // Error
 var Foo = {
   template: `
@@ -87,12 +87,14 @@ var Foo = {
 - 라우터로 특정 URL로 이동시, 해당 URL에 해당하는 여러개의 View(컴포넌트)를 동시에 렌더링한다.
 - 각 컴포넌트에 해당하는 name속성과 router-view 지정필요
 
-```HTML
+```html
 <div id="app">
   <router-view name="nestedHeader"></router-view>
 </div>
 ```
-```JavaScript
+
+
+```javascript
   {
     path: '/home',
     components: {
