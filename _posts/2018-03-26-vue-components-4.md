@@ -79,7 +79,9 @@ var app = new Vue({
 <div id="app">
   // props 명 = "상위 컴포넌트의 데이터"
   <child-component v-bind:passed-data="message"></child-component>
+
   <sibling-component v-bind:passed-sibling="sibling"></sibling-component>
+
 </div>
 ```
 
