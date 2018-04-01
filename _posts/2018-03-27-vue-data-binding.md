@@ -20,6 +20,10 @@ keywords: ""
 ```html
 <span>this will never change: {{ * msg }}</span>
 <div id="item-{{ id }}"></div>
+<div>{{ if (ok) { 
+    return message
+  } 
+}}</div> <!-- X -->
 ```
 
 #### Binding Expressions - 값 연결
@@ -56,7 +60,7 @@ keywords: ""
 - 주의할 점은 두 방법을 함께 사용하지 않고 한 가지만 적용해야 미연에 에러를 방지 할 수 있다.
 
 ```html
-<div class="static" v-bind:class="{'class-a':isA, 'class-b':isB}"></div>
+<div class="static" v-bind:class="{{'class-a':isA, 'class-b':isB}}"></div>
 
 <script>
   data: {
