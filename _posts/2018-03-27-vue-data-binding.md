@@ -29,7 +29,7 @@ keywords: ""
 ```html
 <div>{{ number+1 }}</div> <!-- O -->
 <div>{{ message.split('').reverse().join('') }}</div> <!-- O -->
-<div>{{ if (ok) { return message} } }}</div> <!-- X -->
+<div>{{ if (ok) { return message } }}</div> <!-- X -->
 ```
 
 ```html
