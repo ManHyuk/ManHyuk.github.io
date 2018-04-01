@@ -17,14 +17,6 @@ keywords: ""
 #### Interpolation - 값 대입
   - Vue의 가장 기본적인 데이터 바인딩 체계는 Mustache {{ }}를 따른다.
 
-```html
-<span>this will never change: {{ * msg }}</span>
-<div id="item-{{ id }}"></div>
-<div>{{ if (ok) { 
-    return message
-  } 
-}}</div> <!-- X -->
-```
 
 #### Binding Expressions - 값 연결
 - {{ }} 이용한 데이터 바인딩을 할 때 자바스크립트 표현식을 사용할 수 있다.
