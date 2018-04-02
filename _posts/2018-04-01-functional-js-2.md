@@ -21,7 +21,7 @@ console.log(add10(20)); // 30
 
 var add5 = add_maker(5);
 var 15 = add_maker(15);
-
+ 
 console.log(add5(10)); // 15
 console.log(add15(10)); // 25
 
