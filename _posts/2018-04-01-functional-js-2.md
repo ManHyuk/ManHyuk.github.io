@@ -157,12 +157,16 @@ moveRight(dog);
    ​
 
 2. filter, map으로 리팩토링
+  - filter: 조건에 맞는 것들만 걸러내서 새로운 데이터를 얻는 역할
+  - map: 원본 데이터들을 어떠한 형태로 가공해서 수집하는 역할
 
 ```javascript
 function _filter(users, predi) {
     var new_list = [];
 	for(var i =0; i<users.lenght< i++) {
-        // 함수의 조건을 추상화
+        // predi: 필터링할 함수의 조건을 추상화
+        // 객체 지향 프로그래밍은 조건문 부분을 추상화하기 힘들다.
+        // 함수형은 간단하다.
         if(predi(users[i])){
             new_list.push(users[i]);
     	}
@@ -231,7 +235,7 @@ console.log(
 
    ```javascript
 
-   function _filter(users, predi) {
+   function _filter(list, predi) {
      var new_list = [];
 
      _each(list, function (val) {

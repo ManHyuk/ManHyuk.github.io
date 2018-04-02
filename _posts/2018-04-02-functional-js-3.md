@@ -101,6 +101,7 @@ keywords: ""
 
 
 #### reduce
+  - 기존 데이터들을 가공해서 새로운 데이터를 만듬
 
 ```javascript
 _each(list, function(val) {
@@ -183,7 +184,7 @@ _reduce([1, 2, 3, 4], add, 10)
   function _pipe() {
     var fns = arguments;
     return function(arg) {
-      return _reduce(fns, function (arg, fn) {
+      return  _reduce(fns, function (arg, fn) {
         return fn(arg);
       }, arg)
     }
