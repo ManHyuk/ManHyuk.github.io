@@ -44,7 +44,7 @@ var users = [
 
 ```javascript
 console.log(
-  _map(users, functioin(user) {
+  _map(users, function(user) {
     return user.name;
   })
 );
@@ -69,3 +69,37 @@ console.log(user[0]); // { id: 10, name: 'aa', age: 36 }
 console.log(_values(users[0])); // [10, 'aa', 36]
 console.log(_keys(users[0])); // ['id', 'name', 'age']
 ```
+
+
+```javascript
+console.log(
+  _filter(users, function(user) {
+    return user.age >30 ;
+  })
+)
+
+function _negate(func) {
+  return function (val) {
+    return !func(val);
+  }
+}
+
+// function _reject(data, predi) { // 조건을 제외한 값을 리턴
+//   return _filter(data, function(val) {
+//     return !predi(val);
+//   })
+// }
+
+function _reject(data, predi) { // 조건을 제외한 값을 리턴
+  return _filter(data, _negate(predi));
+}
+
+
+console.log(
+  _reject(users, function(user) {
+    return user.age > 30;
+  })
+);
+```
+
+어렵다
