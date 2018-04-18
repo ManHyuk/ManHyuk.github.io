@@ -201,3 +201,9 @@ _reduce([1, 2, 3, 4], add, 10)
 
 #### go
   - 즉시 실행되는 pipe 함수
+
+```javascript
+function _go() {
+
+}
+```
