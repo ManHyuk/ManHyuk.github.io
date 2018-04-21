@@ -17,10 +17,6 @@ keywords: ""
 #### Interpolation - 값 대입
   - Vue의 가장 기본적인 데이터 바인딩 체계는 Mustache {{ }}를 따른다.
 
-```html
-<span>this will never change: {{* msg}}</span>
-<div id="item-{{ id }}"></div>
-```
 
 #### Binding Expressions - 값 연결
 - {{ }} 이용한 데이터 바인딩을 할 때 자바스크립트 표현식을 사용할 수 있다.
@@ -29,7 +25,6 @@ keywords: ""
 ```html
 <div>{{ number+1 }}</div> <!-- O -->
 <div>{{ message.split('').reverse().join('') }}</div> <!-- O -->
-<div>{{ if (ok) { return message} }}</div> <!-- X -->
 ```
 
 ```html
@@ -57,7 +52,7 @@ keywords: ""
 - 주의할 점은 두 방법을 함께 사용하지 않고 한 가지만 적용해야 미연에 에러를 방지 할 수 있다.
 
 ```html
-<div class="static" v-bind:class="{'class-a':isA, 'class-b':isB}"></div>
+<div class="static" v-bind:class="{{ 'class-a':isA, 'class-b':isB }}"></div>
 
 <script>
   data: {

@@ -6,6 +6,8 @@ description: ""
 keywords: ""
 ---
 
+### Section 2
+
 ```javascript
 
 // add_maker
@@ -95,55 +97,26 @@ moveRight(dog);
 
 
 
-
-```javascript
-
-
-//2. _filter, _map으로 리팩토링
-
-
-//3. each 만들기
-//   1. _each로 _map, _filter 중복제거
-
-//   2. 외부 다형성
-//      1. array_like, arguments, document.querySelectorAll
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 1. 명령형 코드
 
    1. 30세 이상인 users를 거른다.
 
-      ```javascript
-      var users = [
-          {id: 1, name: 'MH', age: 28},
-          {id: 2, name: 'AA', age: 29},
-          {id: 3, name: 'BB', age: 30},
-          {id: 4, name: 'CC', age: 31},
-      ]
+  ```javascript
+  var users = [
+      {id: 1, name: 'MH', age: 28},
+      {id: 2, name: 'AA', age: 29},
+      {id: 3, name: 'BB', age: 30},
+      {id: 4, name: 'CC', age: 31},
+  ]
 
-      var temp_ussers = [];
-      for(var i =0; i<users.lenght< i++) {
-          if(users[i].age >=30 ){
-              temp_users.push(users[i]);
-          }
+  var temp_ussers = [];
+  for(var i =0; i<users.lenght< i++) {
+      if(users[i].age >=30 ){
+          temp_users.push(users[i]);
       }
-      console.log(temp_users);
-      ```
+  }
+  console.log(temp_users);
+  ```
 
    2. 30세 이상인 users의 name을 수집한다.
 
@@ -183,13 +156,17 @@ moveRight(dog);
 
    ​
 
-2. _filter, _map으로 리팩토링
+2. filter, map으로 리팩토링
+  - filter: 조건에 맞는 것들만 걸러내서 새로운 데이터를 얻는 역할
+  - map: 원본 데이터들을 어떠한 형태로 가공해서 수집하는 역할
 
 ```javascript
 function _filter(users, predi) {
     var new_list = [];
 	for(var i =0; i<users.lenght< i++) {
-        // 함수의 조건을 추상화
+        // predi: 필터링할 함수의 조건을 추상화
+        // 객체 지향 프로그래밍은 조건문 부분을 추상화하기 힘들다.
+        // 함수형은 간단하다.
         if(predi(users[i])){
             new_list.push(users[i]);
     	}
@@ -254,10 +231,11 @@ console.log(
 
 3. each 만들기
 
-   1. _each로 -map, _filter 중복제거
+   1. each로 map, filter 중복제거
 
    ```javascript
-   function _filter(users, predi) {
+
+   function _filter(list, predi) {
      var new_list = [];
 
      _each(list, function (val) {
@@ -268,7 +246,6 @@ console.log(
      return new_list;
    }
 
-
    function _map(list, mapper) {
      var new_list = [];
 
@@ -278,16 +255,14 @@ console.log(
      return new_list;
    }
 
+    function _each(list, iter) {
+      for (var i = 0; i < list.length; i++) {
+        iter(list[i]);
+      }
+      return list;
+    }
 
-   function _each(list, iter) {
-     for (var i = 0; i < list.length; i++) {
-       iter(list[i]);
-     }
-     return list;
-   }
    ```
-
-   ​
 
    2. 외부 다형성
 
@@ -315,10 +290,11 @@ console.log(
               return node.nodeName;
           }))
       ); // ['HEAD', 'BODY', ...]
-
-
       // 함수형은 데이터가 있기전에 함수가 먼저 있기 때문에 평가시점이 상대적으로 유연해진다.
       ```
+
+
+
 
    3. 내부 다형성
 
@@ -332,4 +308,6 @@ console.log(
 
       ```
 
-      ​
+
+
+​
