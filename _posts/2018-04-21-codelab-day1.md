@@ -7,6 +7,8 @@ keywords: ""
 ---
 
 
+
+
 - property key, name 차이
   - name: String value
   - key: String value + Symbol value
@@ -589,3 +591,247 @@ two.push(str);
   - 프로퍼티 key 값이 0부터 순서 값
   - 전체 프로퍼티 수를 length로 작성
 - Object 타입이지만 for() 문으로 전개 가능
+
+
+
+
+
+#### rest, arguments 차이
+
+- Argument 오브젝트
+  - 파라미터의 작성에 관계없이 전체 설정
+  - Array-like 이므로 배열 메소드 사용 불가
+  - proto에 Object 첨부
+- rest 파라미터
+
+
+
+
+
+## Operator
+
+#### Destrucutring
+
+- 코드 형태
+  - let one, two, three;
+  - [one, two, three] = [1, 2, 3];
+  - one에 1, two에 2, three에 3 할당
+- 사전적 의미: ~ 구조를 파괴하다.
+  - 원 데이터는 변경 되지 않음.
+
+
+
+#### Object 분할
+
+- Object의 프로퍼티를 분할하여 프로퍼티 이름이 같은 프로퍼티 값으로 할당
+- 사용 형태
+  - {one: two} = {one :1, two: 2}
+  - one에 1 , two에 2 할당
+
+
+
+
+
+#### Object Operation
+
+- 같은 프로퍼티 key 사용
+  - { key:1 , key:2 } // key 이름이 같음
+  - es5 strict 모드에서는 이름이 같으면 에러
+  - ES6에서는 뒤에 작성된 키값으로 대체됨
+
+
+
+- 초기값 설정
+
+  - const one = 1, two = 2;
+  - const values = {one, two} // { one :1, two:2 }
+
+  ​
+
+- function 키워드 작성하지 않음
+
+```javascript
+const obj = {
+    getTotal(param) {
+        return param + 123;
+    }
+}
+coonsole.log(obj.getTotal(400));
+```
+
+
+
+
+
+### Descriptor
+
+- es5
+- 프로퍼티 디스크립터 타입
+  - 속성 이름(ex.enumerable)과 속성 값(true/false)으로 구성
+  - 프로퍼티 속성의 처리 기준 정의
+- 프로퍼티 디스크립터 타입 분류
+  - 데이터 프로퍼티 디스크립터
+  - 액세스 프로퍼티 디스크립터
+
+
+
+
+
+- get 속성
+
+```javascript
+var obj = {};
+Object.defineProperty(obj, 'book', {
+    get: function() {return '책'}
+})ㅣ
+var result = obj.book;
+
+
+```
+
+- getter
+  - obj.book을 실행하면 obj.book의 get()을 자동으로 호출
+  - 그러나 obj.book.get()을 호출하면 에러 발생
+
+
+
+- setter
+
+
+
+
+
+
+
+
+
+#### assign()
+
+
+
+- assign()
+  - 두 번째 파라미터의 오브젝트 프로퍼티를 첫 번째 파라미터에 복사하고, 첫 번째 파라미터 반환
+  - own property만 복사, [[prototype]]은 복사하지 않음
+- 첫 번째 파라미터에 열거 가능한 Object 작성
+  - 작성하지 않거나 undefined, null이면 TypeError
+  - Boolean, Number, String, Number로 작성하면 인스턴스로 생성하여 사용
+- 필요한 이유
+  - ㄹ
+
+
+
+
+
+
+
+
+
+- 연동 되지 않음
+
+```javascript
+const sports = {
+    event: 'soccer',
+    player: 11
+}
+
+const dup ={};
+Object.assign(dup, sports);
+console.log(dup.player);
+
+dup.player = 33;
+console.log(sports.player) 
+
+sports.event = 'swim';
+console.log(dup.event);
+
+// result 
+// 11
+// 11
+// soccer
+```
+
+
+
+
+
+- 연습문제
+
+
+
+```javascript
+const book = {
+    item: {
+        title: 'js'
+    }
+};
+const bookCopy = {};
+Object.assign(bookCopy, book);
+
+book.item.title = 'book'
+console.log(book.item.title) // book
+
+console.log(bookCopy.item.title) // book
+
+// depth가 1이 아니라면 연동됨
+```
+
+
+
+- 복사할 Object가 
+
+
+
+
+
+
+
+#### setPrototypeOf()
+
+- 첫 번째 파라미터의 proto에 두 번째 파라미터 설정
+- 첫 번째 파라미터에 오브젝트 또는 인스턴스 작성
+  - Object.isExtensible() 결과가 false라면 TypeError
+  - Boolean, Number, String, Symbol이면 인스턴스 생성
+  - 두 번째 파라미터를 반영하지 않고 생성한 인스턴스 반환
+- 두 번째 파라미터에 오브젝트 또는 null 작성
+- Es5 에 getPrototypeOf 있음
+
+
+
+- proto에 설정하는 목적
+-  첫 번째 오브젝트.method() 형태로 호출
+
+
+
+
+
+
+
+```javascript
+const Sports = function() {
+    this.count = 123;
+}
+Sports.prototype.getCount = function() {
+    return this.count;
+}
+
+const protoObj = Object.setPrototypeOf({}, Sports.prototype);
+console.log(typeof (protoObj.__proto__));
+
+const result = protoObj.getCount();
+console.log(result);
+
+// result
+// object
+// undefined
+```
+
+
+
+- 첫번째 파라미터에 빈 오브젝트 작성
+- Sports.prototype에 연결된 프로퍼티 인스턴스를 생성하여 빈 Object.proto 에 첨부
+- 이 결과를 protoObj에 할당
+
+
+
+
+
