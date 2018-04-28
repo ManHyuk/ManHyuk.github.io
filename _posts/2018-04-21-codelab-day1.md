@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "자바스크립트 day1"
+title: "코드랩 day1"
 comments: false
 description: ""
 keywords: ""
@@ -739,12 +739,12 @@ Object.assign(dup, sports);
 console.log(dup.player);
 
 dup.player = 33;
-console.log(sports.player) 
+console.log(sports.player)
 
 sports.event = 'swim';
 console.log(dup.event);
 
-// result 
+// result
 // 11
 // 11
 // soccer
@@ -777,7 +777,7 @@ console.log(bookCopy.item.title) // book
 
 
 
-- 복사할 Object가 
+- 복사할 Object가
 
 
 
@@ -830,8 +830,3 @@ console.log(result);
 - 첫번째 파라미터에 빈 오브젝트 작성
 - Sports.prototype에 연결된 프로퍼티 인스턴스를 생성하여 빈 Object.proto 에 첨부
 - 이 결과를 protoObj에 할당
-
-
-
-
-
