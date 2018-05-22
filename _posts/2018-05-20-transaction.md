@@ -302,3 +302,5 @@ REST API 호출(2단계, 3단계)은 한 번에 끝내는 것이 아니라 2번(
 > http://swdev.tistory.com/4 [소프트웨어 개발 이야기]
 >
 > https://dzone.com/articles/transactions-for-the-rest-of-us
+>
+> https://www.popit.kr/rest-기반의-간단한-분산-트랜잭션-구현-1편/
