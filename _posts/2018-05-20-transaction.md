@@ -253,12 +253,28 @@ TCC가 2PC를 REST로 옮긴 것 같아 2PC 먼저 정리 한다.
 ### TCC (Try-Confirm/Cancel)
 ---
 
+![rest-1](/images/transaction/rest-1.png)
 
 
+주문을 처리하는 과정에서 재고를 차감하고 결제 처리는 성공했지만, 구매 주문 생성에 실패를 했다면 롤백처리를 해야 일관성 문제가 생기지 않는다.
 
+모노리틱 아키텍처에서는 일반적으로 데이터베이스의 트랜잭션에 의존하게 된다.
 
+하지만 마이크로 서비스의 경우 각 서비스마다 다른 데이터베이스를 사용하는 것이 일반적이고 이를 하나의 데이터 베이스 트랜잭션으로 처리하는 것은 기술적으로 어렵고(이 기종 데이터베이스일 수도 있고) 처리한다 해도 긴 트랜잭션(long transaction)이 발생하기 때문에 효용도 적다.
 
+TCC는 DZone에 올라온 Transactions for the REST of Us 글에서 나온 것으로 분산된 REST 시스템들 간의 트랜잭션을 HTTP와 REST 원칙으로 접근하여 해결하는 방법이다.
 
+관계형 디비의 경우 START TRANSACTION 키워드로 트랜잭션을 시작하고 정상적으로 작업이 끝나는 경우 COMMIT 키워드를 그렇지 않은 경우 ROLLBACK 키워드를 사용한다.
+
+TCC에서 트랜잭션을 제어하는 방법은 관계형 데이터베이스에서 트랜잭션을 제어하는 방법과 유사하다.
+
+주문 처리를 TCC 방식으로 변경하게 되면 아래처럼 된다.
+
+![rest-2](/images/transaction/rest-2.png)
+
+REST API 호출(2단계, 3단계)은 한 번에 끝내는 것이 아니라 2번(Try, Confirm)에 걸쳐 하게 된다.
+
+트랜잭션의 all-or-nothing을 TCC는 REST API를 호출을 시도(Try)하고 전부 확정(Confirm)하거나 전부 취소(Cancel) 하는 것으로 구현한다.
 
 
 
@@ -284,3 +300,5 @@ TCC가 2PC를 REST로 옮긴 것 같아 2PC 먼저 정리 한다.
 > http://blog.daum.net/ipajama/37 [2단계 커밋]
 >
 > http://swdev.tistory.com/4 [소프트웨어 개발 이야기]
+>
+> https://dzone.com/articles/transactions-for-the-rest-of-us
