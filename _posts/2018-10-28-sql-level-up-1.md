@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "SQL 레벨업 - 1장"
+title: "SQL 레벨업 - 1장 DBMS 아키텍처 개요"
 comments: true
 description: ""
 keywords: ""
