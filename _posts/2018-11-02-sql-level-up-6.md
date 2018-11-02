@@ -1,0 +1,231 @@
+---
+layout: post
+title: "SQL 레벨업 - 6장 SELECT 구문"
+comments: false
+description: ""
+keywords: ""
+---
+
+
+## SELECT 구문
+
+데이터베이스의 핵심은 **검색** 이다. 검색은 다른 말로 **질의(query)** 또는 **추출(retrieve)** 라고 한다.
+
+
+- WHERE 구의 다양한 조건 지정
+WHERE 구는 다양한 조건 지저이 가능하다.
+
+|연산자 | 의미 |
+| --- | --- |
+|= | ~와 같음
+| <> | ~와 같지 않음
+| >= | ~ 이상
+| > | ~보다 큼
+| <= | ~ 이하
+| < | ~ 보다 작음
+
+
+- WHERE 구는 거대한 벤다이어그램
+WHERE 구를 사용하면 테이블에 필터 조건을 붙일 수 있다. 하지만 실제로는 복합적인 조건을 사용할 때가 많다. 그럴땐 'AND' 또는 'OR'로 연결 한다.
+
+- IN 으로 OR 조건을 간단하게 작성
+
+```sql
+SELECT name, address
+FROM address
+WHERE address = '서울시' OR address = '부산시' OR address = '인천시';
+```
+
+```sql
+SELECT name, address
+FROM address
+WHERE address IN ('서울시', '부산시', '인천시');
+```
+
+
+- NULL 조건 검색
+
+WHERE 구로 조건을 지정할때 흔히하는 실수
+
+```sql
+SELECT name, address
+FROM address
+WHERE phone_nbr = NULL;
+```
+
+위 쿼리는 사람 사람의 눈에는 정상적인 SELECT 구문이다. 하지만 실제로 작동하는 SELECT구문은 아니다.
+
+NULL 레코드를 선택할때는 **'IS NULL'** 이라는 특별한 키워드를 사용해야 한다.
+
+```sql
+SELECT name, address
+FROM address
+WHERE phone_nbr IS NULL;
+```
+
+
+
+#### - GROUP BY 구 -
+
+GROUP BY 구를 사용하면, 테이블에서 단순하게 데이터를 선택하는 것뿐만 아니라 합계 또는 평균 등의 집계 연산을 SQL 구문으로 할 수 있다.
+
+GROUP BY 구는 케이크를 자르는 칼과 같은 역할을 한다.
+
+- 그룹을 나누었을 때의 장점
+
+```sql
+SELECT sex, COUNT(*)
+FROM Address
+GROUP BY sex;
+
+
+-- 결과
+| sex | count |
+|------*------|
+| 남 | 4 |
+| 여 | 5 |
+```
+
+케이크를 자르는 기준을 변경한다면
+
+
+```sql
+SELECT sex, COUNT(*)
+FROM Address
+GROUP BY address;
+
+
+-- 결과
+| address | count |
+|------*------|
+| 서울시 | 4 |
+| 인천시 | 5 |
+| 부산시 | 2 |
+| 수원시 | 1 |
+```
+
+구분 없이 하려면
+
+```sql
+SELECT sex, COUNT(*)
+FROM Address
+GROUP BY ());
+
+
+-- 결과
+count
+------
+9
+```
+
+
+#### - HAVING 구 -
+
+GROUP BY 구문을 통해 얻은 결과에 조건을 더할 수 있다. SQL은 집합 결과에 또다시 조건을 걸어 선택하는 기능이 있다. HAVING이라는 예약어를 사용한다.
+
+```sql
+SELECT address, COUNT(*)
+FROM Address
+GROUP BY address
+HAVING COUNT(*) = 1;
+
+-- 결과
+address | count
+--------*-------
+속초시 | 1
+서귀포시 | 1
+```
+
+
+HAVING 구를 사용하면 선택된 결과 집합에 또 다시 조건을 지정할 수 있다. 즉 WHERE 구가 '레코드'에 조건을 지정한다면, HAVING 구는 '집합'에 조건을 지정하는 기능이다.
+
+
+#### - ORDER BY -
+
+결과 레코드들은 DBMS에 따라서 특정한 규칙을 가지고 정렬될 수 있겠지만, SQL의 일반적인 규칙에서는 정렬과 관련된 내용이 없다. 따라서 어떤 DBMS에서 순서를 가지고 출력된다 해도, 다른 DBMS에서는 그렇게 출력되지 않을 수 있다.
+
+모든 DBMS에서 SELECT 구문의 결과 순서를 보장하려면 **ORDER BY** 를 통해서 명시적으로 순서를 지정해줘야 한다.
+
+
+```sql
+SELECT name, age
+FROM Address
+ORDER BY age DESC;
+
+-- 결과
+name | age
+--------*-------
+만혁 | 55
+준 | 32
+철수 | 32
+준 | 20
+```
+
+실행 결과를 보면 32세의 사람이 두명이 있다. 이 사람들의 순서도 DBMS마다 다를 수 있다. 이 순서도 맞추고 싶다면 정렬 키워드를 추가해야 한다. 예를 들어 'ORDER BY age DESC, name ASC'
+
+
+
+#### - 뷰와 서브쿼리 -
+
+자주사용하는 SELECT 구을 데이터베이스 안에 저장하는 것이 **뷰(View)** 라고 한다.
+하지만 테이블과 달리 내부에 데이터를 보유하지는 않는다. 뷰는 단지 'SELECT 구문'을 저장한것이다.
+
+- 뷰 만드는 방법
+
+```sql
+CREATE VIEW [뷰이름] ([필드이름1], [필드이름2] ...) AS
+```
+
+```sql
+CREATE VIEW CountAddress (v_address, cnt)
+AS
+SELECT address, COUNT(*)
+FROM Address
+GROUP BY address;
+```
+
+이렇게 만들어진 뷰는 일반적인 테이블처럼 SELECT 구문에서 사용할 수 있다.
+
+```sql
+SELECT v_address, cnt
+FROM CountAddress;
+```
+
+
+- 익명 뷰
+
+뷰는 사용방법이 테이블과 같지만 내부에는 테이블을 ㅗㅂ유하지 않는다는 점이 테이블과 다르다. 따라서 데이터를 선택하는 SELECT 구문은, 실제로는 내부적으로 '추가적인 SELECT 구문'을 실행하는 중첩(nested) 구조가 된다.
+
+```sql
+-- 뷰에서 데이터를 선택할 때
+SELECT v_address, cnt
+FROM CountAddress;
+
+--  뷰는 실행할 때 SELECT 구문으로 전개
+
+SELECT v_address, cnt
+FROM (SELECT address, COUNT(*)
+      FROM Address
+      GROUP BY address) AS CountAddress;
+```
+
+이렇게 FROM 구에 직접 지정하는 SELECT 구문을 **서브쿼리** 라고 한다.
+
+
+- 서브쿼리를 사용한 편리한 조건 지정
+
+WHERE 구의 조건에 서브쿼리를 사용할 수 있다. 이 방법을 통해서 **매칭** 을 쉽게 만들 수 있다.
+
+```sql
+-- 전개 전
+SELECT name
+  FROM Address
+WHERE name IN (SELECT name FROM Address2);  
+
+-- 전개 후
+SELECT name
+  FROM Address
+WHERE name IN ('만혁', '준', '조조');  
+```
+
+이러한 IN 과 서브쿼리를 함께 사용하는 구문은 데이터가 변경되어도 따로 수정할 필요가 없다는 점에서 굉장히 편리하다. 서브쿼리를 사용하면 IN 내부의 서브쿼리가 SELECT 구문 전체가 실행될때마다 다시 실행된다.
