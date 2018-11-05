@@ -22,8 +22,6 @@ avatar: https://avatars2.githubusercontent.com/u/11765448?s=400&v=4
 navigation:
   - name: About
     url: /about
-  - name: Posts
-    url: /
   - name: Archive
     url: /archive
   # - name: Tags
