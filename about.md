@@ -4,6 +4,16 @@ title: About Me
 permalink: /about/
 ---
 
+
+### 한만혁 (ManHyuk Han)
+
+NodeJS, VueJS를 좋아하는 비기너 개발자 입니다.
+
+주로 NodeJS를 사용하여 BackEnd 개발을 하고 있습니다.
+
+
+---
+
 #### Education
 
 **광운대학교** (2015.03 ~ 2018.02)
