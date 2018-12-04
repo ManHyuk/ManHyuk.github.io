@@ -15,21 +15,30 @@ keywords: ""
 
 
 #### Interpolation - 값 대입
+{% raw %}
   - Vue의 가장 기본적인 데이터 바인딩 체계는 Mustache {{ }}를 따른다.
-
+{% endraw%}
 
 #### Binding Expressions - 값 연결
+{% raw %}
 - {{ }} 이용한 데이터 바인딩을 할 때 자바스크립트 표현식을 사용할 수 있다.
+{% endraw%}
 - 복잡하지 않은 간단한 표현식에 사용
 
-```html
-<div>{{ number+1 }}</div> <!-- O -->
-<div>{{ message.split('').reverse().join('') }}</div> <!-- O -->
-```
 
 ```html
+{% raw %}
+<div>{{ number+1 }}</div> <!-- O -->
+<div>{{ message.split('').reverse().join('') }}</div> <!-- O -->
+{% endraw %}
+```
+
+
+```html
+{% raw %}
 {{ message | capitalize }}
 {{ message | capitalize | upcapitalize }}
+{% endraw %}
 ```
 
 
@@ -52,6 +61,7 @@ keywords: ""
 - 주의할 점은 두 방법을 함께 사용하지 않고 한 가지만 적용해야 미연에 에러를 방지 할 수 있다.
 
 ```html
+{% raw%}
 <div class="static" v-bind:class="{{ 'class-a':isA, 'class-b':isB }}"></div>
 
 <script>
@@ -63,6 +73,7 @@ keywords: ""
 
 <!-- 결과 값은 -->
 <div class="static class-a"></div>
+{% endraw %}
 ```
 
 - Array 구문도 사용할 수 있다.

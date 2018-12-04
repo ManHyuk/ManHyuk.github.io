@@ -1,8 +1,21 @@
 ---
 layout: page
-title:
+title: About Me
 permalink: /about/
 ---
+
+
+### 한만혁 (ManHyuk Han)
+
+NodeJS, VueJS를 좋아하는 비기너 개발자 입니다.
+
+주로 NodeJS를 사용하여 BackEnd 개발을 하고 있습니다.
+
+---
+
+#### Contact
+**Email**
+  - rnanhyuk@gmail.com
 
 
 #### Education
@@ -10,9 +23,15 @@ permalink: /about/
 **광운대학교** (2015.03 ~ 2018.02)
 - 컴퓨터소프트웨어전공
 
+#### Career
+**HyperConnect - HyperX**
+- BackEnd 개발 인턴 (2018.06.25 ~ 2018.08.31)
 
+**스마일게이트 스토브 - 웹프론트개발팀**
+- Web FrontEnd 개발 인턴 (2018.03.12 ~ 2018.06.22)
 
 #### Activites
+
 - **스마일게이트 서버개발캠프** (2018.01.02 ~ 2018.02.23)
 
 - **AWS 대학생 서포터즈** (2017.07 ~ 2018.08)
@@ -27,29 +46,3 @@ permalink: /about/
   - **18기** 서버 파트 (2016.03.01 ~ 2016.07.30)
 
 ---
-
-# Projects
-
-#### [STEVE]
-- 게임 유통 및 관리 플랫폼
-
-#### [글적]
-- 한줄 일기 서비스
-
-#### [야, 타!]
-- 카풀, 카쉐어링 서비스
-
-#### [VOCAVOCANI]
-- 온라인 어휘 스터디
-
-#### [당신의 전시]
-- 전시 정보 제공 서비스
-
-#### [ZZICME]
-- 아마추어 포토그래퍼 중개 서비스
-
-#### [SeoulMarket]
-- 서울시 내 프리마켓 정보 공유 서비스
-
-#### [MONSTUDY]
-- 스터디룸 검색 및 후기 서비스

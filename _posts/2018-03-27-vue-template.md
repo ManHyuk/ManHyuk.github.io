@@ -23,13 +23,16 @@ keywords: ""
 
 
 #### JS Expressions
+{% raw %}
 - {{ }} 안에 다음과 같이 javascript표현식도 가능하다.
+{% endraw %}
 
 ```html
+{% raw %}
 <div>{{ number+1 }}</div> <!-- O -->
 
 <div>{{ message.split('').reverse().join('') }}</div> <!-- O -->
-
+{% endraw%}
 ```
 
 
@@ -48,12 +51,16 @@ keywords: ""
 
 
 #### Filter
-- 화면에 표시되는 텍스트의 형식을 편하게 바꿀 수 있도록 고안된 기능, |을 이용하여 여러개의 필터를 적용할 수 있다.
+
+화면에 표시되는 텍스트의 형식을 편하게 바꿀 수 있도록 고안된 기능, '\|'을 이용하여 여러개의 필터를 적용할 수 있다.
+
 
 
 ```html
+{% raw %}
 <!-- message에 표시될 문자에 capitalize 필터를 적용하여 첫 글자를 대문자로 변경한다. -->
 {{ message | capitalize}}
+{% endraw %}
 ```
 
 ```javascript
