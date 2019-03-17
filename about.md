@@ -9,8 +9,6 @@ permalink: /about/
 
 NodeJS, VueJS를 좋아하는 비기너 개발자 입니다.
 
-주로 NodeJS를 사용하여 BackEnd 개발을 하고 있습니다.
-
 ---
 
 #### Contact
