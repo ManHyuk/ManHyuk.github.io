@@ -7,7 +7,7 @@ permalink: /about/
 
 ### 한만혁 (ManHyuk Han)
 
-NodeJS, VueJS를 좋아하는 비기너 개발자 입니다.
+NodeJS, Vue, React를 좋아하는 비기너 개발자 입니다.
 
 ---
 
@@ -22,6 +22,9 @@ NodeJS, VueJS를 좋아하는 비기너 개발자 입니다.
 - 컴퓨터소프트웨어전공
 
 #### Career
+**SNOW - ZEPETO**
+- 웹 개발 (2018.12.16 ~ )
+
 **HyperConnect - HyperX**
 - BackEnd 개발 인턴 (2018.06.25 ~ 2018.08.31)
 
