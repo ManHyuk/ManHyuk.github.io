@@ -22,7 +22,7 @@ NodeJS, Vue, React를 좋아하는 비기너 개발자 입니다.
 - 컴퓨터소프트웨어전공
 
 #### Career
-**SNOW - ZEPETO**
+**SNOW - ZEPETO (WitStudio)**
 - 웹 개발 (2018.12.16 ~ )
 
 **HyperConnect - HyperX**
