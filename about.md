@@ -15,11 +15,12 @@ NodeJS, Vue, React를 좋아하는 비기너 개발자 입니다.
 **Email**
   - rnanhyuk@gmail.com
 
-
+<!-- 
 #### Education
 
 **광운대학교** (2015.03 ~ 2018.02)
 - 컴퓨터소프트웨어전공
+ -->
 
 #### Career
 **NAVER - Global Music**
