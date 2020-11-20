@@ -88,6 +88,7 @@ suspend fun loadUSer() {
 여기서부터 코틀린의 코루틴이 시작된다!
 
 
+## 1. Basic
 
 ```kotlin
 fun main() {
@@ -190,8 +191,36 @@ fun main() = runBlocking {
 
 
 
+## 2. Cancellation And Timeouts
 
 
+job.cacel()을 통해 수행중인 코루틴을 중지시킬 수 있다.
+
+```kotlin
+fun main() = runBlocking {
+    val job = launch {
+        repeat(1000) { i -> 
+            println("job: I'm sleeping $i ...")
+            delay(500L)
+        }
+    }
+    delay(1300L)
+    println("main: i'm tired of wating!")
+    job.cancel()
+    job.join()
+    pringln("main: NowI I can quit")
+}
+```
+
+500ms 마다 `println("job: I'm sleeping $i ...")`가 실행되고 1300ms 이후에 잡이 취소된다.
+
+```console
+job: I'm sleeping 0 ... [main]
+job: I'm sleeping 1 ... [main]
+job: I'm sleeping 2 ... [main]
+main: I'm tired of wating!
+main: Now I can quit
+```
 
 
 
