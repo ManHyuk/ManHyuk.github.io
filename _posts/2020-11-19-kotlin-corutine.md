@@ -6,6 +6,8 @@ description: ""
 keywords: ""
 ---
 
+## 0. Coroutine
+
 
 `코루틴`이란 루틴의 일종이며 자신이 마지막으로 `중단`되었던 지점에서 다시 `재개` 가 가능하다.
 
@@ -223,8 +225,128 @@ main: Now I can quit
 ```
 
 
+### Coroutine cancellation is cooperative
+
+```kotlin
+fun main() = runBlocking {
+    val startTime = System.currentTimeMillis()
+    val job = launch(Dispatchers.Default) {
+        var nextPrintTime = startTime
+        var i = 0
+        while (i < 5) { // computation loop, just wastes CPU
+            // print a message twice a second
+            if (System.currentTimeMillis() >= nextPrintTime) {
+                // delay(1L)
+                // yield()
+                println("job: I'm sleeping ${i++} ...")
+                nextPrintTime += 500L
+            }
+        }
+    }
+    delay(1300L) // delay a bit
+    println("main: I'm tired of waiting!")
+    job.cancelAndJoin() // cancels the job and waits for its completion
+    println("main: Now I can quit.")
+}
+```
+
+
+코루틴이 취소 되려면 코틀린은 협조적이어야한다. (Coroutine cancellation is cooperative)
+
+위 예제코드를 보면 1300ms이후 자연스럽게 코루틴이 취소 될것처럼 보이지만 취소되지 않고 내부에 반복문이 5번 다 수행된다.
+
+그 이유는 코루틴에 협조적이지 않기 때문인데, 이전 예제코드를 본다면 `delay`라는 `suspend` 함수를 사용했는데 이번 예제에도 `delay` 또는 `yield`함수를 넣으면 기대와 같이 2번의 반복문만 수행하게 된다.
+
+`yield`함수를 사용하게 되면 종료될때 `Exception`을 내뱉게 된다. 예외를 받아 코루틴 자체에 강제로 예외를 만들어 핸들링하는 방식이다.
+
+```kotlin
+fun main() = runBlocking {
+    val startTime = System.currentTimeMillis()
+    val job = launch(Dispatchers.Default) {
+        try {
+            var nextPrintTime = startTime
+            var i = 0
+            while (i < 5) { // computation loop, just wastes CPU
+                // print a message twice a second
+                if (System.currentTimeMillis() >= nextPrintTime) {
+                    // delay(1L)
+                    // yield()
+                    println("job: I'm sleeping ${i++} ...")
+                    nextPrintTime += 500L
+                }
+        }
+        } catch (e: Exception) {
+            println(e) // err
+        }
+        
+    }
+    delay(1300L) // delay a bit
+    println("main: I'm tired of waiting!")
+    job.cancelAndJoin() // cancels the job and waits for its completion
+    println("main: Now I can quit.")
+}
+```
+
+따라서 코루틴 스스로 종료를 할 수 있게 하는 방법을 알아보자.
+
+### Making computation code cancellable
+- way 1 
+    - to periodically invoke a suspending (`suspend function` like `delay`,`yield`)
+- way 2
+    - explicty check the cancelation status (`isActive`)
 
 
 
+```kotlin
+fun main() = runBlocking {
+    val startTime = System.currentTimeMillis()
+    val job = launch(Dispatchers.Default) {
+        var nextPrintTime = startTime
+        var i = 0
+        while (isActive) { // cancellable computation loop
+            // print a message twice a second
+            if (System.currentTimeMillis() >= nextPrintTime) {
+                println("job: I'm sleeping ${i++} ...")
+                nextPrintTime += 500L
+            }
+        }
+    }
+    delay(1300L) // delay a bit
+    println("main: I'm tired of waiting!")
+    job.cancelAndJoin() // cancels the job and waits for its completion
+    println("main: Now I can quit.")
+}
+```
+
+
+
+`isActive`는 코루틴의 확장 프로퍼티이며 코루틴의 잡이 활성 상태인지 체크한다.
+
+
+### Closing resources with finally
+
+코루틴을 종료할때 네트워크나, 디비 같은 리소스를 사용하다 갑자기 취소될때 어떻게 리소스를 해제해야 할까?
+
+`finally`에서 해제해주면 된다.
+
+
+```kotlin
+fun main() = runBlocking {
+    val job = launch {
+        try {
+            repeat(1000) { i ->
+                println("job: I'm sleeping $i ...")
+                delay(500L)
+            }
+        } finally {
+            println("job: I'm running finally")
+        }
+    }
+    delay(1300L) // delay a bit
+    println("main: I'm tired of waiting!")
+    job.cancelAndJoin() // cancels the job and waits for its completion
+    println("main: Now I can quit.")
+}
+```
 
 
