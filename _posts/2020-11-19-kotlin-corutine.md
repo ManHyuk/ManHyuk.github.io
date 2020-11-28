@@ -349,4 +349,133 @@ fun main() = runBlocking {
 }
 ```
 
+## 3.Composing Suspending Functions
+
+```kotlin
+suspend fun doSomethingUsefulOne(): Int {
+    delay(1000L) // pretend we are doing something useful here
+    // async call like restTemplte, db connecton...
+    return 13
+}
+
+suspend fun doSomethingUsefulTwo(): Int {
+    delay(1000L) // pretend we are doing something useful here, too
+    // async call like restTemplte, db connecton...
+    return 29
+}
+
+
+fun main() = runBlocking {
+    val time = measureTimeMillis {
+        val one = doSomethingUsefulOne()
+        val two = doSomethingUsefulTwo()
+        println("The answer is ${one + two}")
+    }
+
+    println("Completed in $time ms")
+}
+```
+
+### the coroutine, just like in the regular code, is sequential by default. 
+
+첫번째 비동기 작업의 결과를 두번째 비동기 작업에 매개변수로 필요하다면 어떻게 해야할까?
+
+기본적으로 코루틴은 순차적으로 동작한다. (자바였다면 콜백을 생성한다거나 CompltedFuture? 같은걸로 한번 랩핑 했던것 같다.)
+
+비동기 코드를 순차적으로 작성하면 알아서 순차적으로 순서를 맞춰준다. -> `Dream Code`
+
+하지만 두 코드는 서로 의존성이 없는데 각 함수가 1초씩 두번 실행되기 때문에 총 2초의 시간이 걸린다.
+
+
+### Coucurrent using async
+```kotlin
+fun main() = runBlocking {
+    val time = measureTimeMillis {
+        val one = async { doSomethingUsefulOne() }
+        val two = async { doSomethingUsefulTwo() }
+        println("The answer is ${${one.await()} + ${two.await}}")
+    }
+
+    println("Completed in $time ms")
+}
+```
+
+각 비동기 함수가 의존성이 없다면 `동시적(concurrency)`으로 `명시` 하면 2초가 아닌 1초에 끝낼 수 있다. (JS로 생각한다면 `Promise.all()` 같은 느낌)
+
+`async` 키워드가 뭐 길래 왜 `await`할 수 있을까의 대답은 async는 `job`을 상속받은 `Deferred`객체 이기 때문이다.
+
+
+### Lazily started async
+만약 비동기 처리를 바로 시작하는게 아닌 따로 시작하는 시점을 핸들링하는것도 가능하다
+
+```kotlin
+fun main() = runBlocking {
+    val time = measureTimeMillis {
+        val one = async(start = CoroutineStart.LAZY) { doSomethingUsefulOne() }
+        val two = async(start = CoroutineStart.LAZY) { doSomethingUsefulTwo() }
+        
+        // some computation
+        one.start() // start the first one
+        two.start() // start the second one
+        println("The answer is ${one.await() + two.await()}")
+    }
+    println("Completed in $time ms")
+}
+```
+
+만약 `LAZY`모드에서 `START`를 하지 않는다면 동시에 실행되지 않는다.
+
+### Async Style Fucntions
+
+
+
+```kotlin
+fun main() {
+    val time = measureTimeMillis {
+        val one = somethingUsefulOneAsync()
+        val two = somethingUsefulTwoAsync()
+        
+        runBlocking {
+            println("The answer is ${one.await() + two.await()}")
+        }
+    }
+    println("Completed in $time ms")
+}
+// The result type of somethingUsefulOneAsync is Deferred<Int>
+fun somethingUsefulOneAsync() = GlobalScope.async {
+    doSomethingUsefulOne()
+}
+
+// The result type of somethingUsefulTwoAsync is Deferred<Int>
+fun somethingUsefulTwoAsync() = GlobalScope.async {
+    doSomethingUsefulTwo()
+}
+```
+
+위와 같은 형태로 `GlobalScope`를 함수 감싸서 사용하게 된다면 어디에서나 사용할 수 있다는 장점을 가지고 있다.
+
+이렇게 사용하는 경우 중간에 Exception이 발생해도 모든 코루틴이 작동하며, 에러를 트래킹할 수 없다. 따라서 코틀린 코루틴에서는 이런 방식을 권장하지 않는다.
+
+
+
+### Structured concurrency with async
+
+```kotlin
+
+fun main() = runBlocking {
+    val time = measureTimeMillis {
+        println("The concurrentSum is ${concurrentSum()}")
+        
+    }
+    println("Completed in $time ms")
+}
+
+suspend fun concurrentSum(): Int = coroutineScope {
+    val one = async { doSomethingUsefulOne() }
+    val two = async { doSomethingUsefulTwo() }
+    one.await() + two.await()
+}
+```
+
+`coroutineSocpe`를 통해 코루틴 함수를 받을 수 있는 구조에서만 사용이 가능한 함수이며 Exception이 발생한다면 모든 코루틴이 취소 된다.
 
