@@ -479,3 +479,169 @@ suspend fun concurrentSum(): Int = coroutineScope {
 
 `coroutineSocpe`를 통해 코루틴 함수를 받을 수 있는 구조에서만 사용이 가능한 함수이며 Exception이 발생한다면 모든 코루틴이 취소 된다.
 
+
+
+
+## Coroutine under the hood
+
+지금까지 봐 왔던 코루틴은 손쉽게 비동기처리를 가능하게 한다. 이것은 `MAGIC`이지만 `THIS IS NO MAGIC` 이라고 한다.
+
+도대체 코루틴은 어떤 방식으로 동작 되는걸까? 
+
+
+```kotlin
+fun main(): Unit {
+    GlobalScope.launch {
+        val userData = fetchUserData()
+        val userCache = fetchUserCache(userData)
+        updateTextView(userCache)
+    }
+}
+
+suspend fun fetchUserData() = "user_name"
+suspend fun fetchUserCache(user: String) = user
+fun updateTextView(user: String) = user
+```
+
+위와 같은 코루틴 코드가 순차적으로 동작한다고 가정한다면, suspend 함수는 일시중단 되었다가 재개된다.
+
+
+### CPS transformation
+```java
+// JAVA/JVM
+Object fetchUserCache(String user, Continuation<User> cont) { ... }
+```
+
+코드는 새로운 파라미터 `Continuation` 이라는 클래스를 받게 된다. 이 클래스는 `LABEL`을 붙여준다?
+
+
+```kotlin
+fun main(): Unit {
+    GlobalScope.launch {
+        // LABEL 1
+        val userData = fetchUserData()
+        // LABEL 2
+        val userCache = fetchUserCache(userData)
+        // LABEL 3
+        updateTextView(userCache)
+    }
+}
+```
+
+이 라벨은 `switch case`문으로 표현된다 
+
+
+```kotlin
+fun main(): Unit {
+    switch(label) {
+        case 0:
+            val userData = fetchUserData()
+        case 1:
+            val userCache = fetchUserCache(userData)
+        case 2:
+            updateTextView(userCache)
+    }
+}
+```
+
+이 `LABEL`이 완성되면
+
+```kotlin
+fun main(cont: Continuation): Unit {
+    val statemachine = CountinuatiomImpl { ..}
+    switch(label) {
+        case 0:
+            val userData = fetchUserData(statemachine)
+        case 1:
+            val userCache = fetchUserCache(userData, statemachine)
+        case 2:
+            updateTextView(userCache)
+    }
+}
+```
+
+각각의 상태를 가지고 있는 `statemachine` 을 함수에 넘겨주게 된다.
+
+
+즉, 아래와 같이 표현할 수 있다.
+
+```kotlin
+fun main() {
+    println("[in] main")
+    myCoroutine(MyContinuation())
+    println("\n[out] main")
+}
+
+fun myCoroutine(cont: MyContinuation) {
+    when(cont.label) {
+        0 -> {
+            println("\nmyCoroutine(), label: ${cont.label}")
+            cont.label = 1
+            fetchUserData(cont)
+        }
+        1 -> {
+            println("\nmyCoroutine(), label: ${cont.label}")
+            val userData = cont.result
+            cont.label = 2
+            cacheUserData(userData, cont)
+        }
+        2 -> {
+            println("\nmyCoroutine(), label: ${cont.label}")
+            val userCache = cont.result
+            updateTextView(userCache)
+        }
+    }
+}
+
+fun fetchUserData(cont: MyContinuation) {
+    println("fetchUserData(), called")
+    val result = "[서버에서 받은 사용자 정보]"
+    println("fetchUserData(), 작업완료: $result")
+    cont.resumeWith(Result.success(result))
+}
+
+fun cacheUserData(user: String, cont: MyContinuation) {
+    println("cacheUserData(), called")
+    val result = "[캐쉬함 $user]"
+    println("cacheUserData(), 작업완료: $result")
+    cont.resumeWith(Result.success(result))
+}
+
+fun updateTextView(user: String) {
+    println("updateTextView(), called")
+    println("updateTextView(), 작업완료: [텍스트 뷰에 출력 $user]")
+}
+
+class MyContinuation(override val context: CoroutineContext = EmptyCoroutineContext)
+    : Continuation<String> {
+
+    var label = 0
+    var result = ""
+
+    override fun resumeWith(result: Result<String>) {
+        this.result = result.getOrThrow()
+        println("Continuation.resumeWith()")
+        myCoroutine(this)
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> 출처
+> 유튜브 - [새차원](https://youtu.be/DOXyH1RtMC0)
