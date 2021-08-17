@@ -7,7 +7,9 @@ permalink: /about/
 
 ### 한만혁 (ManHyuk Han)
 
-NodeJS, Vue, React를 좋아하는 비기너 개발자 입니다.
+NodeJS, Vue, React를 좋아하며
+
+Java와 Kotlin을 주로 사용하고있는 비기너 개발자입니다.
 
 ---
 
