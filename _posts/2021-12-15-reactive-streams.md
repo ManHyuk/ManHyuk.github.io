@@ -8,7 +8,6 @@ keywords: ""
 
 
 
-## Reactive Streams
 
 
 ### 정의
@@ -76,6 +75,9 @@ Reactive 시스템이 등장한 배경에 대해서 간단히 정리하면 다�
 
 
 
+그리고 비동기 요청을 위해 CompletableStage, ListenableFuture 등 다양한 라이브러리들을 사용할 수 있는데, 문제는 각각 호환이 안된다는 것이다. 상호 변환을 위해서는 유틸성 로직을 따로 작성해야 한다.
+
+
 ### Message Driven Reactive System
 위 네 가지 특정 중 Message Driven에 대해서 좀 더 살펴보자. Message Driven의 방식을 통해서 delegate failures as messages, back-pressure, non-blocking communication이라는 목적을 달성할 수 있다고 했는데 각각은 어떤 것을 말하는 것일까?
 
@@ -83,6 +85,8 @@ Reactive 시스템이 등장한 배경에 대해서 간단히 정리하면 다�
 시스템에서 메세지의 스트림을 처리하다보면 예기치않게 에러가 발생할 수 있다. 이 때 메세지를 처리하는 쪽에서 메세지 스트림 처리를 중단하고 에러를 핸들링하러 플로우가 넘어가는 것은 바람직하지 않은 방식이다.
 
 여기서 말하는 에러 핸들링의 바람직한 방식은 에러가 발생했을 때 메세지 스트림을 멈추는 것이 아니라 에러를 또하나의 메세지로 생각하고 이를 에러 핸들링하는 쪽으로 전달하는 것이다. 그렇게 된다면 나머지 메세지는 계속 처리하고 발생한 에러에 대해서는 에러 핸들링을 하는 쪽에서 알아서 처리하도록 위임하는 것이다.
+
+중요한것은 에러 핸들링을 위임하고 Publisher 본인은 스트림의 아이템 전달을 멈추지 않는것이다
 
 
 ### Non-blocking communication
@@ -177,15 +181,230 @@ Pull 방식에선 구독자가 데이터를 10개만 처리 가능하다고 발�
 
 
 
+## Reactive Streams
+
+이러한 Reactive 시스템을 만들기 위해 `Reative Streams`를 만들게 되었다.
+
+Reactive Streams API를 기준으로 Netflix의 RxJava, Pivotal의 WebFlux, Lightbend의 Akka가 구현되었다.
+
+
+
+### Reactive Streams API
+
+어마어마한 구현체들을 보니, 근본이 된다는 Reactive Streams API가 엄청 복잡하고 어려울거라는 생각이 들지만
+
+실제로는 비교적 간단한? 인터페이스로 구성 되어있다. (processor는 나중에)
+
+[ReativeStreamsAPI](https://github.com/reactive-streams/reactive-streams-jvm/blob/v1.0.3/api/src/main/java/org/reactivestreams/Publisher.java)
+
+[명세](https://github.com/reactive-streams/reactive-streams-jvm#specification)
+
+```java
+public interface Publisher<T> {
+    public void subscribe(Subscriber<? super T> s);
+}
+ 
+public interface Subscriber<T> {
+    public void onSubscribe(Subscription s);
+    public void onNext(T t);
+    public void onError(Throwable t);
+    public void onComplete();
+}
+ 
+public interface Subscription {
+    // n = LONG.MAX -> push
+    // n = 1 -> pull
+    public void request(long n);
+    public void cancel();
+}
+```
+
+
+Reactive Streams 스펙을 다이어그램으로 표현하면 아래와 같다.
+
+
+![arch](/images/reactive-streams/reactivestreams10.png)
+
+- Subscriber는 Publisher에게 subscribe(Subscriber) 를 통해서 이벤트 구독을 시작한다.
+- Publisher는 Subscriber에게 Subscription 객체를 만들거나 관리하고 있는 Subscription 객체를 onSubscribe(Subscription) 메소드를 통해 전달한다. Subscription을 통해서 Subscriber는 Publisher와 직접적으로 통신할 필요가 없어진다.
+- Subscription은 Subscriber로부터 전달받는 피드백을 통해서 Publisher로부터 아이템을 가져오고 그것을 - Subscriber에게 전달한다. Publisher와 Subscriber는 둘 사이를 직접적으로 몰라도된다.
+- 정상적인 경우라면 Subscriber의 onNext(Object) 메소드를 호출해서 아이템을 전달한다. 그리고 만약 Publisher 자신이 가지고 있는 아이템을 모두 전달했다면 onComplete() 를 호출해서 Subscriber에게 그 사실을 알려준다.
+마지막으로 에러가 발생했을 경우 onError(Throwable) 를 통해서 문제가 발생했다는 사실을 알려준다.
+
+
+
+```java
+public static void main(String[] args) {
+	Publisher pub = new Publisher() {
+    	@Override
+        public void subscribe(Subscriber subscriber) { ... }        
+    }
+
+    Subscriber<Integer> sub = new Subscriber<>() {
+    	@Override
+        public void onSubscribe(Subscription subscription) { ... }
+        @Override
+        public void onNext(Integer item) { ... }
+        @Override
+        public void onError(Throwable throwable) { ... }
+        @Override
+        public void onComplete() { ... }
+    }
+
+    pub.subscribe(sub);
+}
+```
+
+
+- 전체적인 구조는 위와 같다. 각각 Publisher, Subscriber의 구현체를 구현하고 pub.subscribe(sub) 을 통해 Subscriber가 Publisher가 주는 아이템을 구독하는 형태이다.
+- 이제 각각의 메소드를 살펴보면서 어떻게 위의 다이어그램처럼 동작하는지 비교해보자.
+
+
+```java
+Publisher pub = new Publisher() {
+    Iterable<Integer> it = Arrays.asList(1, 2, 3, 4, 5);
+    @Override
+    public void subscribe(Subscriber subscriber) {
+        ExecutorService es = Executors.newSingleThreadScheduledExecutor();
+        Iterator<Integer> iterator = it.iterator();
+
+        subscriber.onSubscribe(new Subscription() {
+            Future<?> f;
+            @Override
+            public void request(long n) {
+                this.f = es.submit(() -> {
+                    long left = n;
+                    try {
+                        while (left > 0) {
+                            if (!iterator.hasNext()) {
+                                subscriber.onComplete();
+                                es.shutdown();
+                                break;
+                            }
+                            subscriber.onNext(iterator.next());
+                            left -= 1;
+                        }
+                    } catch (Exception e) {
+                        subscriber.onError(e);
+                    }
+                });
+            }
+            @Override
+            public void cancel() {
+                f.cancel(true);
+            }
+        });
+    }
+};
+```
+
+
+- Subscriber가 subscribe() 를 통해 구독을 시작하면 Publisher는 자신과 Subscriber을 연결해줄 수 있는 중간 객체인 Subscription 객체를 만들어서 Subscriber에게 전달한다.
+- 이후에 Subscriber는 Subscription을 통해서 Publisher에게 아이템을 달라고 back-pressure를 할 수 있다.
+- Subscription은 Reactive Streams API를 보면 request(long)과 cancel() 을 구현해야한다. 이는 둘다 Subscriber를 위한 인터페이스이며 Subscriber는 자신의 필요에 따라 아이템을 요청할 수도 있고 구독을 취소할 수 있다. 이와 같이 Reactive Streams는 마냥 push 모델이 아니라 필요에 따라 pulling 모델도 같이 적용하고 있다.
+- Subscription 내부에서는 요청이 들어오면 Publisher의 아이템을 가져와서 Subscriber의 onNext(), onError() 를 통해 아이템을 넘겨주거나 자신의 상황을 메세지의 형태로 알려준다.
+- 마지막으로 Publisher가 자신이 가진 아이템을 모두 넘겨주었을 때 onComplete() 을 통해서 스트림이 끝났음을 알려준다.
+
+```java
+Subscriber<Integer> sub = new Subscriber<>() {
+    final static int MAX_BUFFER_SIZE = 2;
+    
+    Subscription subscription;
+    List<Integer> buf = new ArrayList<>();
+
+    @Override
+    public void onSubscribe(Subscription subscription) {
+        this.subscription = subscription;
+        this.subscription.request(MAX_BUFFER_SIZE);
+    }
+
+    @Override
+    public void onNext(Integer item) {
+        buf.add(item);
+        if (buf.size() >= MAX_BUFFER_SIZE) {
+            buf = new ArrayList<>();
+            this.subscription.request(MAX_BUFFER_SIZE);
+        }
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        System.out.println(throwable);
+    }
+
+    @Override
+    public void onComplete() {
+        buf = new ArrayList<>();
+    }
+};
+```
+
+- Subscriber는 구독을 시작하고 onSubscribe() 를 통해서 Subscription 객체를 넘겨 받는다. 이후 Subscription의 request() 를 통해서 아이템을 요청한다.
+- onNext()를 통해서는 자신이 구독한 아이템이 넘어오게되고 자신의 상황에 맞춰서 다음 번에 받을 아이템의 양을 조절한다.
+
+
+## 결론 - 그래서 이걸 다 고려하고 구현해야 할까?
+
+답은 아니다.
+
+학습 목적으로는 직접 구현하는것도 좋은 시도이겠지만, 서비스를 운영하는 입장에서는 전문가들이 만들어 둔 많은 구현체들을 사용하면 된다.
+
+
+- 순수하게 스트림 연산 처리가 필요하다면 RxJava, Reactor Core, Akka Streams 등을 사용
+- 저장소의 데이터를 Reactive Streams로 조회하고 싶다면 Reactive Mongo, R2DBC 등을 사용
+- 웹 프로그래밍과 연결된 Reactive Streams가 필요하다면 Spring WebFlux, Armeria, Vert.x 등을 사용
+
+
+위에서 언급한 구현체들을 사용함으로서 얻을 수 있는 또 하나의 이점은 각각의 구현체를 섞어서 사용이 가능하다는 점이다.
+
+
+```java
+// Initiate MongoDB FindPublisher
+FindPublisher<Document> mongoDBUsers = mongodbCollection.find();
+
+// MongoDB FindPublisher -> RxJava Observable
+Observable<Integer> rxJavaAllAges =
+    Observable.fromPublisher(mongoDBUsers)
+              .map(document -> document.getInteger("age"));
+
+// RxJava Observable -> Reactor Flux
+Flux<HttpData> fluxHttpData =
+    Flux.from(rxJavaAllAges.toFlowable(BackpressureStrategy.DROP))
+        .map(age -> HttpData.ofAscii(age.toString()));
+
+// Reactor Flux -> Armeria HttpResponse
+HttpResponse.of(Flux.concat(httpHeaders, fluxHttpData));
+```
+
+예제 코드와 같이 MongoDB에서 조회한 데이터를 Http 응답하려고할때 각각을 조합하여 사용할 수 있다.
 
 
 
 
 
+## 추가
+### Reactive Streams을 사용해 비동기, 병렬 처리를 하려면?
+
+Reactive Streams API 명세를 보면, Publisher 가 생성하고 Subscriber 가 소비하는 모든 신호는 non-blocking 이어야한다고 정의 되어있다. 따라서, Publisher - Subscriber 를 구현시, block이 되지않도록 해야한다.
+
+위 내용을 스펙에 맞게 구현 했다면, 멀티코어를 모두 활용하기 위해서 Subscriber.onNext() 함수를 병렬로 호출해야하는데, 이 방법은 스펙에 맞지 않으므로 사용할 수 없다.
+
+onNext, onError, onComplite와 같은 함수 호출은 스레드 안전성을 보장하여 신호를 보내야하며, 멀티 스레드에서 수행될 경우, 외부에서 동기화를 해줘야한다. 따라서, 순차적으로만 onNext 를 호출할 수 밖에 없다.
+
+
+즉, Publisher 가 멀티스레딩하여 Subscriber.onNext() 함수 를 동시에 호출할수 없게된다.
+
+그렇다면, 도대체 어떻게 병렬로 구현할 수 있을까?
+
+다음에 알아보자...
 
 
 
 
+## P.S.
+글 여러개를 정독하며 쓰다 힘들어서 거의 복붙 했습니다...
+
+참고에 남겨둔 링크들 모두 엄청난 글들이니 모두 백번씩 정독하세요...
 ---
 
 
