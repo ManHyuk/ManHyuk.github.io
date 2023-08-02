@@ -1,12 +1,24 @@
 ---
 layout: post
-title: "Apple press and hold"
+title: "Mac Settings"
 comments: true
 description: ""
 keywords: ""
 ---
 
 
+
+### mkidr root
+
+`sudo vi /etc/synthetic.conf`
+
+
+```bash
+// in conf
+home1   /Users/user/home1
+```
+
+tab 으로 구분 
 
 
 언제부터인지 모르겠지만 새로 맥 세팅을 하다보면 
