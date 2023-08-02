@@ -67,9 +67,11 @@ http://maven.apache.org/xsd/settings-1.0.0.xsd">
 </mirror>
 </mirrors>
 
-
 </settings>
 ```
+
+근데 위 설정해도 다른 곳에서 오류가 또 발생한다면 
+고집부리지말고 maven 다운로드해서 인텔리제이 설정에서 홈 패스만 변경해서 사용하자
 
 
 
