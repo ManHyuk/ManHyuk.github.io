@@ -4,7 +4,6 @@ title: "7장 호텔 예약 시스템"
 comments: true
 description: ""
 keywords: ""
-draft: true
 ---
 
 
@@ -27,7 +26,6 @@ draft: true
 
 MSA 아키텍처를 사용한다. 
 
-![msa](/images/hotel/msa.jfif)
 
 각각의 서비스 간 통신에는 gRPC와 같은 방법을 사용하곤 한다.
 
@@ -93,13 +91,11 @@ if ((total_reserved + ${numberOfRoomsToReserve} <=  110 * total_inventory)) {
 멱등 API: 예약 API 요청에 멱등 키를 추가하는 방법이다. 몇 번을 호출해도 같은 결과를 내는  API 를 멱등  API 라고 한다.
 reservation_id 를 사용해 멱등성을 보장할 수 있다.
 
-![Idempotent](/images/hotel/idempotent.png)
 
 
 
 1. 예약 주문서를 만든다. 고객이 정보를 입력하고 '계속' 버튼을 누르면 예약 주문을 생성한다.
 2. 고객이 검토할 수 있도록 예약 주문서를 반환한다. 이때  API 는 반환 결과에 `reservation_id` 를 넣는다
-![booking](/images/hotel/booking.PNG)
 
 3. 검토가 끝난 예약을 전송한다 이때 요청에도 `reservation_id`가 붙는다.
 4. 사용자가 예약 완료 버튼을 한 번 더 누르게 되면 `reservation_id` 는 PK 이기 때문에 새로운 레코드는 생성되지 않는다.
@@ -110,7 +106,6 @@ reservation_id 를 사용해 멱등성을 보장할 수 있다.
 여러 사용자가 잔여 객실이 하나밖에 없는 유형의 객실을 동시에 예약하려는 경우
 
 
-![cc](/images/hotel/cc.png)
 
 1. 디비 트랜잭션이 없는 경우를 가정, 사용자1과 사용자2가같은 유형의 객실을 예약하려고 할때
 2. 트랜잭션 1은 `(total_reserved + rooms_to_book) <= total_inventory` 인지 검사
